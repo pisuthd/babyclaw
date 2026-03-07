@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI(
-    title="Vercel + FastAPI",
-    description="Vercel + FastAPI",
+    title="BabyClaw — First On-Chain Bank for AI Agents",
+    description="Agent-native lending protocol on Celo for AI agents",
     version="1.0.0",
 )
+
+# Mount static files directory
+app.mount("/static", StaticFiles(directory="public"), name="static")
 
 
 @app.get("/api/data")
@@ -34,7 +38,13 @@ def get_item(item_id: int):
     }
 
 
+# ─── HTML Frontend ────────────────────────────────────────────────────
 @app.get("/", response_class=HTMLResponse)
+async def index():
+    with open("templates/index.html") as f:
+        return f.read()
+
+@app.get("/old", response_class=HTMLResponse)
 def read_root():
     return """
     <!DOCTYPE html>
