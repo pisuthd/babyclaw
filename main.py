@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="BabyClaw — First On-Chain Bank for AI Agents",
@@ -12,6 +12,14 @@ app = FastAPI(
 # Mount static files directory
 app.mount("/static", StaticFiles(directory="public"), name="static")
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/api/data")
 def get_sample_data():
@@ -41,7 +49,7 @@ def get_item(item_id: int):
 # ─── HTML Frontend ────────────────────────────────────────────────────
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    with open("templates/index.html") as f:
+    with open("public/index.html") as f:
         return f.read()
 
 @app.get("/old", response_class=HTMLResponse)
