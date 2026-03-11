@@ -44,4 +44,63 @@ interface IBabyStaking {
      * @return Buffer threshold in mantissa (0-10e16, where 10e16 = 10% max)
      */
     function getLiquidationThresholdBuffer(address user) external view returns (uint256);
+
+    // ========== Reward Distribution Functions ==========
+
+    /**
+     * @notice Get the amount of unclaimed rewards for a user
+     * @param user The address of the user
+     * @return The amount of BABY tokens available to claim
+     */
+    function getRewards(address user) external view returns (uint256);
+
+    /**
+     * @notice Get the current reward per token rate
+     * @return The reward per token accumulated across all stakers
+     */
+    function getRewardPerToken() external view returns (uint256);
+
+    /**
+     * @notice Get the effective reward rate for a user (with tier multiplier)
+     * @param user The address of the user
+     * @return The effective reward rate based on user's tier
+     */
+    function getEffectiveRewardRate(address user) external view returns (uint256);
+
+    /**
+     * @notice Get the tier reward multiplier
+     * @param tier The tier level (0-4)
+     * @return The multiplier as percentage (100 = 1x, 150 = 1.5x, etc.)
+     */
+    function getTierMultiplier(uint256 tier) external view returns (uint256);
+
+    /**
+     * @notice Get the total rewards distributed so far
+     * @return Total BABY tokens distributed as rewards
+     */
+    function getTotalRewardsDistributed() external view returns (uint256);
+
+    /**
+     * @notice Get the current reward rate (tokens per second)
+     * @return The current reward rate
+     */
+    function getRewardRate() external view returns (uint256);
+
+    /**
+     * @notice Get the rewards duration
+     * @return The duration of the current reward period in seconds
+     */
+    function getRewardsDuration() external view returns (uint256);
+
+    /**
+     * @notice Get the total reward pool available
+     * @return The total BABY tokens allocated for rewards
+     */
+    function getTotalRewardPool() external view returns (uint256);
+
+    /**
+     * @notice Get the amount of rewards remaining in the pool
+     * @return The amount of BABY tokens remaining to be distributed
+     */
+    function getRemainingRewards() external view returns (uint256);
 }

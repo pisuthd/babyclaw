@@ -118,6 +118,98 @@ contract MockBabyStaking is IBabyStaking {
         
         return 0;
     }
+
+    // ========== Reward Functions (Mock Implementation) ==========
+
+    /**
+     * @notice Get the amount of unclaimed rewards for a user
+     * @param user The address of the user
+     * @return The amount of BABY tokens available to claim
+     */
+    function getRewards(address user) external pure override returns (uint256) {
+        // Mock implementation - returns 0 for testing
+        return 0;
+    }
+
+    /**
+     * @notice Get the current reward per token rate
+     * @return The reward per token accumulated across all stakers
+     */
+    function getRewardPerToken() external pure override returns (uint256) {
+        // Mock implementation - returns 0 for testing
+        return 0;
+    }
+
+    /**
+     * @notice Get the effective reward rate for a user (with tier multiplier)
+     * @param user The address of the user
+     * @return The effective reward rate based on user's tier
+     */
+    function getEffectiveRewardRate(address user) external view override returns (uint256) {
+        // Mock implementation - returns tier-dependent mock rate
+        uint256 tier = getStakingTier(user);
+        return tier * 100; // Mock rate: 0, 100, 200, 300, 400
+    }
+
+    /**
+     * @notice Get the tier reward multiplier
+     * @param tier The tier level (0-4)
+     * @return The multiplier as percentage (100 = 1x, 150 = 1.5x, etc.)
+     */
+    function getTierMultiplier(uint256 tier) external pure override returns (uint256) {
+        // Mock multipliers matching production: 1x, 1.5x, 2x, 2.5x, 3x
+        if (tier == 0) return 100;
+        if (tier == 1) return 150;
+        if (tier == 2) return 200;
+        if (tier == 3) return 250;
+        if (tier == 4) return 300;
+        return 100;
+    }
+
+    /**
+     * @notice Get the total rewards distributed so far
+     * @return Total BABY tokens distributed as rewards
+     */
+    function getTotalRewardsDistributed() external pure override returns (uint256) {
+        // Mock implementation - returns 0 for testing
+        return 0;
+    }
+
+    /**
+     * @notice Get the current reward rate (tokens per second)
+     * @return The current reward rate
+     */
+    function getRewardRate() external pure override returns (uint256) {
+        // Mock implementation - returns 0 for testing
+        return 0;
+    }
+
+    /**
+     * @notice Get the rewards duration
+     * @return The duration of the current reward period in seconds
+     */
+    function getRewardsDuration() external pure override returns (uint256) {
+        // Mock implementation - returns 1 year
+        return 365 days;
+    }
+
+    /**
+     * @notice Get the total reward pool available
+     * @return The total BABY tokens allocated for rewards
+     */
+    function getTotalRewardPool() external pure override returns (uint256) {
+        // Mock implementation - returns 0 for testing
+        return 0;
+    }
+
+    /**
+     * @notice Get the amount of rewards remaining in the pool
+     * @return The amount of BABY tokens remaining to be distributed
+     */
+    function getRemainingRewards() external pure override returns (uint256) {
+        // Mock implementation - returns 0 for testing
+        return 0;
+    }
     
     /*** Testing Functions ***/
     
