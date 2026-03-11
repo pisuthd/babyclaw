@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse 
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -9,8 +8,6 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Mount static files directory
-app.mount("/static", StaticFiles(directory="public"), name="static")
 
 # Add CORS middleware
 app.add_middleware(
