@@ -49,7 +49,7 @@ def get_item(item_id: int):
 # ─── HTML Frontend ────────────────────────────────────────────────────
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    with open("public/index.html") as f:
+    with open("templates/index.html") as f:
         return f.read()
 
 @app.get("/old", response_class=HTMLResponse)
