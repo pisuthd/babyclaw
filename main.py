@@ -42,13 +42,6 @@ def get_item(item_id: int):
         "timestamp": "2024-01-01T00:00:00Z"
     }
 
-
-# ─── HTML Frontend ────────────────────────────────────────────────────
-@app.get("/", response_class=HTMLResponse)
-async def index():
-    with open("public/index.html") as f:
-        return f.read()
-
 @app.get("/old", response_class=HTMLResponse)
 def read_root():
     return """
