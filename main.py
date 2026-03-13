@@ -126,7 +126,7 @@ If an action is not supported, return:
             with True: 
 
                 # Get tools from the MCP server
-                kilolend_tools = mcp_client.list_tools_sync()
+                # kilolend_tools = mcp_client.list_tools_sync()
 
                 # Create a session manager that stores data in S3
                 # Use the AI wallet address for session ID to ensure proper isolation
@@ -145,7 +145,7 @@ If an action is not supported, return:
 
                 streaming_agent = Agent(
                     callback_handler=None,
-                    tools=[kilolend_tools],
+                    # tools=[kilolend_tools],
                     model=(BedrockModel(
                         model_id="global.anthropic.claude-sonnet-4-5-20250929-v1:0",
                         boto_session=boto_session
