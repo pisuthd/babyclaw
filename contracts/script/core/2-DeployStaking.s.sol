@@ -6,9 +6,9 @@ import "../../src/BabyStaking.sol";
 
 /**
  * @title DeployStaking
- * @notice Deploy BabyStaking for Celo Sepolia Testnet (Chain ID 11142220)
+ * @notice Deploy BabyStaking for Celo Mainnet
  * @dev Usage: 
- *   forge script script/core/2-DeployStaking.s.sol --rpc-url celo_sepolia --broadcast --verify
+ *   forge script script/core/2-DeployStaking.s.sol --rpc-url celo_mainnet --broadcast --verify
  * 
  * Prerequisites:
  *   1. BabyToken must be deployed first (run 1-DeployBabyToken.s.sol)
@@ -22,10 +22,10 @@ contract DeployStaking is Script {
         address deployer = vm.addr(deployerPrivateKey);
         
         console.log("===========================================");
-        console.log("Deploying BabyStaking to Celo Sepolia");
+        console.log("Deploying BabyStaking to Celo Mainnet");
         console.log("===========================================");
         console.log("Chain ID:", block.chainid);
-        require(block.chainid == 11142220, "Must deploy to Celo Sepolia (chain ID 11142220)");
+        require(block.chainid == 42220, "Must deploy to Celo (chain ID 42220)");
         
         console.log("Deployer address:", deployer);
         console.log("Block number:", block.number);

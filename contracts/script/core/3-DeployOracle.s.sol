@@ -7,13 +7,13 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
  * @title DeployOracle
- * @notice Deploy BabyPriceOracle for testnet with mock USDC
+ * @notice Deploy BabyPriceOracle
  * @dev Usage: 
- *   forge script script/core/3-DeployOracle.s.sol --rpc-url celo_sepolia --broadcast --verify
+ *   forge script script/core/3-DeployOracle.s.sol --rpc-url celo_mainnet --broadcast --verify
  */
 contract DeployOracle is Script {
     
-    // Native token address (CELO/ETH/etc.)
+    // Native token address
     address public constant NATIVE_TOKEN = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     
     function run() external {
@@ -22,7 +22,7 @@ contract DeployOracle is Script {
         address deployer = vm.addr(deployerPrivateKey);
         
         console.log("===========================================");
-        console.log("Deploying BabyPriceOracle to Testnet");
+        console.log("Deploying BabyPriceOracle to Mainnet");
         console.log("===========================================");
         console.log("Chain ID:", block.chainid);
         
@@ -36,21 +36,21 @@ contract DeployOracle is Script {
         
         // Load token addresses from deployment file 
         address babyTokenAddress = 0xE370336C3074E76163b2f9B07876d0Cb3425488D;
-        address usdcAddress = 0x999B1A634796d4a94ff4223537d47979a4C07624;
+        address usdtAddress = 0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e;
         require(babyTokenAddress != address(0), "BabyToken address not found");
-        require(usdcAddress != address(0), "USDC address not found");
+        require(usdtAddress != address(0), "USDT address not found");
         
         console.log("Token addresses loaded:");
         console.log("  BabyToken:", babyTokenAddress);
-        console.log("  USDC:", usdcAddress);
+        console.log("  USDT:", usdtAddress);
         
         vm.startBroadcast(deployerPrivateKey);
         
         // Deploy Oracle
         BabyPriceOracle oracle = new BabyPriceOracle();
         
-        // Set initial prices for testnet
-        // Native token = $0.50 (for testing)
+        // Set initial prices
+        // Native token = $0.075
         oracle.setDirectPrice(
             NATIVE_TOKEN,
             0.075e18
@@ -58,14 +58,14 @@ contract DeployOracle is Script {
         
         // Mock USDC = $1.00 (stablecoin)
         oracle.setDirectPrice(
-            usdcAddress,
+            usdtAddress,
             1e18
         );
         
-        // BABY = $0.0001
+        // BABY = $0.0000075
         oracle.setDirectPrice(
             babyTokenAddress,
-            0.0001e18
+            0.0000075e18
         );
         
         vm.stopBroadcast();
@@ -78,7 +78,7 @@ contract DeployOracle is Script {
         console.log("Initial prices set:");
         console.log("  Native token: $0.075");
         console.log("  USDC: $1.00");
-        console.log("  BABY: $0.0001");
+        console.log("  BABY: $0.0000075");
         console.log("");
         
     }

@@ -12,16 +12,15 @@ import "../../src/interfaces/ComptrollerInterface.sol";
 import "../../src/interfaces/InterestRateModel.sol";
 
 /**
- * @title DeployProtocol - Testnet
- * @notice Deploy all protocol contracts and configure the BabyClaw system on testnet with mock USDC
+ * @title DeployProtocol 
+ * @notice Deploy all protocol contracts and configure the BabyClaw system
  * @dev Usage: 
- *   forge script script/core/4-DeployProtocol.s.sol --rpc-url celo_sepolia --broadcast --verify
+ *   forge script script/core/4-DeployProtocol.s.sol --rpc-url celo_mainnet --broadcast --verify
  * 
  * Prerequisites:
- *   1. Mock USDC deployed (0-DeployMockTokens.s.sol)
- *   2. BabyToken deployed
- *   3. BabyPriceOracle deployed
- *   4. BabyStaking deployed
+ *   1. BabyToken deployed
+ *   2. BabyPriceOracle deployed
+ *   3. BabyStaking deployed
  */
 contract DeployProtocol is Script {
     
@@ -33,8 +32,8 @@ contract DeployProtocol is Script {
     address public BABY_TOKEN;
     address public BABY_STAKING;
     
-    // Mock token addresses (loaded from deployment file)
-    address public USDC;
+    // Official USDT
+    address public USDT;
     
     // Deployment configuration
     uint256 public constant INITIAL_EXCHANGE_RATE = 0.2e18; // 0.2 cToken per underlying
@@ -45,9 +44,9 @@ contract DeployProtocol is Script {
     uint256 public constant LIQUIDATION_INCENTIVE = 1.08e18; // 8% liquidation bonus
     
     // Collateral factors (what % of asset value can be borrowed against)
-    uint256 public constant USDC_COLLATERAL_FACTOR = 0.85e18; // 85% for USDC
+    uint256 public constant USDT_COLLATERAL_FACTOR = 0.85e18; // 85% for USDT
     uint256 public constant NATIVE_COLLATERAL_FACTOR = 0.75e18; // 75% for native token
-    uint256 public constant BABY_COLLATERAL_FACTOR = 0.25e18; // 25% for BABY token
+    uint256 public constant BABY_COLLATERAL_FACTOR = 0.1e18; // 10% for BABY token
     
     // Borrow caps (0 = no cap)
     uint256 public constant NO_CAP = 0; // No borrow cap
@@ -56,7 +55,7 @@ contract DeployProtocol is Script {
     Comptroller public comptroller;
     JumpRateModelV2 public stablecoinRateModel;
     JumpRateModelV2 public volatileRateModel;
-    CErc20Immutable public cUSDC;
+    CErc20Immutable public cUSDT;
     CErc20Immutable public cBABY;
     CEther public cNative;
     
@@ -79,10 +78,10 @@ contract DeployProtocol is Script {
         require(balance > 0.3 ether, "Insufficient balance for deployment");
         
         // Get prerequisite contract addresses
-        ORACLE = 0xa8CA0007df005349E9ed0D34790E7e1c1CbC46a3;
-        BABY_STAKING = 0xaB0f04EF204Db673DDf6A075129d8C2B7f85caAE;
+        ORACLE = 0xaB0f04EF204Db673DDf6A075129d8C2B7f85caAE;
+        BABY_STAKING = 0x999B1A634796d4a94ff4223537d47979a4C07624;
         BABY_TOKEN = 0xE370336C3074E76163b2f9B07876d0Cb3425488D;
-        USDC = 0x999B1A634796d4a94ff4223537d47979a4C07624;
+        USDT = 0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e;
  
         _verifyPrerequisites();
         
@@ -119,7 +118,7 @@ contract DeployProtocol is Script {
         console.log("\nVerifying prerequisite contracts...");
         require(ORACLE != address(0), "Oracle address not set");
         require(BABY_TOKEN != address(0), "BabyToken address not found");
-        require(USDC != address(0), "USDC address not found");
+        require(USDT != address(0), "USDT address not found");
         require(BABY_STAKING != address(0), "BabyStaking address not set");
         console.log("All prerequisite contracts verified");
     }
@@ -138,10 +137,10 @@ contract DeployProtocol is Script {
         // 1 second block time = 31,536,000 blocks per year
         uint256 blocksPerYear = 31536000;
         
-        // Stablecoin rate model (for USDC)
-        // - 1% base rate, 4% slope before kink, 109% jump after 80% utilization
+        // Stablecoin rate model (for USDT)
+        // - 3% base rate, 4% slope before kink, 109% jump after 80% utilization
         stablecoinRateModel = new JumpRateModelV2(
-            0.01e18,         // 1% base rate per year
+            0.03e18,         // 3% base rate per year
             0.04e18,         // 4% multiplier per year before kink
             1.09e18,         // 109% jump multiplier per year after kink
             0.80e18,         // 80% kink point
@@ -166,18 +165,18 @@ contract DeployProtocol is Script {
     function _deployCTokens(address deployer) internal {
         console.log("\n3. Deploying cTokens...");
         
-        // cUSDC (stablecoin - uses stablecoin rate model)
-        cUSDC = new CErc20Immutable(
-            USDC,
+        // cUSDT (stablecoin - uses stablecoin rate model)
+        cUSDT = new CErc20Immutable(
+            USDT,
             ComptrollerInterface(address(comptroller)),
             InterestRateModel(address(stablecoinRateModel)),
             INITIAL_EXCHANGE_RATE,
-            "Compound USDC",
-            "cUSDC",
+            "Compound USDT",
+            "cUSDT",
             CTOKEN_DECIMALS,
             payable(deployer)
         );
-        console.log("cUSDC:", address(cUSDC));
+        console.log("cUSDT:", address(cUSDT));
         
         // cBABY (volatile asset - uses volatile rate model)
         cBABY = new CErc20Immutable(
@@ -225,9 +224,9 @@ contract DeployProtocol is Script {
         // Support all cToken markets
         uint result;
         
-        result = comptroller._supportMarket(CToken(address(cUSDC)));
-        require(result == 0, "Failed to support cUSDC market");
-        console.log("cUSDC market supported");
+        result = comptroller._supportMarket(CToken(address(cUSDT)));
+        require(result == 0, "Failed to support cUSDT market");
+        console.log("cUSDT market supported");
         
         result = comptroller._supportMarket(CToken(address(cBABY)));
         require(result == 0, "Failed to support cBABY market");
@@ -244,9 +243,9 @@ contract DeployProtocol is Script {
         // Set collateral factors
         uint result;
         
-        result = comptroller._setCollateralFactor(CToken(address(cUSDC)), USDC_COLLATERAL_FACTOR);
-        require(result == 0, "Failed to set cUSDC collateral factor");
-        console.log("cUSDC collateral factor:", USDC_COLLATERAL_FACTOR, "(85%)");
+        result = comptroller._setCollateralFactor(CToken(address(cUSDT)), USDT_COLLATERAL_FACTOR);
+        require(result == 0, "Failed to set cUSDT collateral factor");
+        console.log("cUSDT collateral factor:", USDT_COLLATERAL_FACTOR, "(85%)");
         
         result = comptroller._setCollateralFactor(CToken(address(cNative)), NATIVE_COLLATERAL_FACTOR);
         require(result == 0, "Failed to set cNative collateral factor");
@@ -254,13 +253,13 @@ contract DeployProtocol is Script {
         
         result = comptroller._setCollateralFactor(CToken(address(cBABY)), BABY_COLLATERAL_FACTOR);
         require(result == 0, "Failed to set cBABY collateral factor");
-        console.log("cBABY collateral factor:", BABY_COLLATERAL_FACTOR, "(15%)");
+        console.log("cBABY collateral factor:", BABY_COLLATERAL_FACTOR, "(10%)");
         
         // Set borrow caps (all no cap for testing)
         CToken[] memory cTokens = new CToken[](3);
         uint[] memory borrowCaps = new uint[](3);
         
-        cTokens[0] = CToken(address(cUSDC));
+        cTokens[0] = CToken(address(cUSDT));
         cTokens[1] = CToken(address(cBABY));
         cTokens[2] = CToken(address(cNative));
         
@@ -302,14 +301,14 @@ contract DeployProtocol is Script {
         console.log("VolatileRateModel:", address(volatileRateModel)); 
         
         console.log("\nMarkets:");
-        console.log("cUSDC:", address(cUSDC));
+        console.log("cUSDT:", address(cUSDT));
         console.log("cBABY:", address(cBABY));
         console.log("cCELO:", address(cNative));
         
         console.log("\nMarket Configuration:");
-        console.log("USDC: 85% collateral factor");
+        console.log("USDT: 85% collateral factor");
         console.log("Native: 75% collateral factor");
-        console.log("BABY: 25% collateral factor");
+        console.log("BABY: 10% collateral factor");
         
         console.log("\nBABY Utility: ENABLED");
         console.log("Staked BABY provides boost to borrow limits");

@@ -8,5 +8,6 @@ optimizer_runs = 200
 
 [rpc_endpoints]
 celo_sepolia = "https://celo-sepolia.drpc.org"
+celo_mainnet = "https://celo.drpc.org"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

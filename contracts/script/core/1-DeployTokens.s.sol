@@ -2,14 +2,13 @@
 pragma solidity ^0.8.10;
 
 import {Script, console} from "forge-std/Script.sol";
-import "../../src/BabyToken.sol";
-import "../../src/utils/MockToken.sol";
+import "../../src/BabyToken.sol"; 
 
 /**
  * @title DeployTokens
- * @notice Deploy BabyToken and mock USDC token for testnet
+ * @notice Deploy BabyToken
  * @dev Usage: 
- *   forge script script/core/1-DeployTokens.s.sol --rpc-url <your-rpc> --broadcast --verify
+ *   forge script script/core/1-DeployTokens.s.sol --rpc-url celo_mainnet --broadcast --verify
  */
 contract DeployTokens is Script {
     
@@ -19,7 +18,7 @@ contract DeployTokens is Script {
         address deployer = vm.addr(deployerPrivateKey);
         
         console.log("===========================================");
-        console.log("Deploying Tokens to Testnet");
+        console.log("Deploying Tokens to Mainnet");
         console.log("===========================================");
         console.log("Chain ID:", block.chainid);
         
@@ -40,17 +39,7 @@ contract DeployTokens is Script {
             address(0) // No AI agent for now
         );
         console.log("BabyToken deployed:", address(babyToken));
-        
-        // 2. Deploy Mock USDC
-        console.log("\n2. Deploying Mock USDC...");
-        MockToken usdc = new MockToken(
-            "USD Coin",
-            "USDC",
-            6,
-            1_000_000 * 1e6 // 1 million initial supply
-        );
-        console.log("Mock USDC deployed:", address(usdc));
-        
+
         vm.stopBroadcast();
         
         console.log("\n===========================================");
@@ -60,12 +49,6 @@ contract DeployTokens is Script {
         console.log("Name: BabyToken");
         console.log("Symbol: BABY");
         console.log("Total Supply: 1,000,000,000 BABY");
-        console.log("");
-        console.log("Mock USDC:", address(usdc));
-        console.log("Name: USD Coin");
-        console.log("Symbol: USDC");
-        console.log("Decimals: 6");
-        console.log("Total Supply: 1,000,000 USDC");
         console.log("");
          
     }

@@ -111,7 +111,7 @@ contract BabyPriceOracle is PriceOracle {
      * @return The number of decimals of the asset
      */
     function _getUnderlyingDecimals(address underlying) private view returns (uint8) {
-        // Handle native token (CELO/KAIA/ETH)
+        // Handle native token
         if (underlying == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE) {
             return 18;
         }
