@@ -112,17 +112,18 @@ If an action is not supported, return:
             prompt = f"{request.prompt}"
 
             # Create MCP client with chain-specific RPC URL
-            mcp_client = MCPClient(lambda: stdio_client(
-                StdioServerParameters(
-                    command="npx", 
-                    args=["-y","@tamago-labs/kilolend-mcp"],
-                    env={
-                        "CHAIN_ID": "8217"
-                    }
-                )
-            ))
+            # mcp_client = MCPClient(lambda: stdio_client(
+            #     StdioServerParameters(
+            #         command="npx", 
+            #         args=["-y","@tamago-labs/kilolend-mcp"],
+            #         env={
+            #             "CHAIN_ID": "8217"
+            #         }
+            #     )
+            # ))
 
-            with mcp_client: 
+            # with mcp_client:
+            with True: 
 
                 # Get tools from the MCP server
                 kilolend_tools = mcp_client.list_tools_sync()
