@@ -11,6 +11,7 @@ from strands.models import BedrockModel
 import boto3
 import os
 from dotenv import load_dotenv
+from contextlib import nullcontext
 
 # Load .env for local development
 load_dotenv()
@@ -123,7 +124,7 @@ If an action is not supported, return:
             # ))
 
             # with mcp_client:
-            with True: 
+            with nullcontext():
 
                 # Get tools from the MCP server
                 # kilolend_tools = mcp_client.list_tools_sync()
