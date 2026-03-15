@@ -128,6 +128,13 @@ export const CTOKEN_ABI = [
   },
   {
     inputs: [],
+    name: 'getCash',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'totalReserves',
     outputs: [{ name: '', type: 'uint256' }],
     stateMutability: 'view',

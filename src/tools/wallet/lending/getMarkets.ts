@@ -15,11 +15,11 @@ const BLOCKS_PER_YEAR = 31536000n
 
 /**
  * Calculate APY from rate per block
+ * Compound-like protocols: APY = (ratePerBlock * BLOCKS_PER_YEAR / 1e18) * 100
  */
-function calculateAPY(ratePerBlock: bigint, decimals: number = 18): string {
+function calculateAPY(ratePerBlock: bigint): string {
   const ratePerYear = ratePerBlock * BLOCKS_PER_YEAR
-  const rateFormatted = parseFloat(formatUnits(ratePerYear, decimals))
-  const apy = (Math.pow(1 + rateFormatted, 365) - 1) * 100
+  const apy = (Number(ratePerYear) / 1e18) * 100
   return apy.toFixed(2)
 }
 
@@ -114,8 +114,8 @@ export const getMarketsTool = tool({
         const [totalSupply, totalBorrows, cash, borrowRatePerBlock, supplyRatePerBlock, exchangeRate] = results
 
         // Calculate APYs
-        const supplyApy = calculateAPY(supplyRatePerBlock as bigint, 18)
-        const borrowApy = calculateAPY(borrowRatePerBlock as bigint, 18)
+        const supplyApy = calculateAPY(supplyRatePerBlock as bigint)
+        const borrowApy = calculateAPY(borrowRatePerBlock as bigint)
 
         // Calculate utilization rate: totalBorrows / (cash + totalBorrows)
         // This represents the percentage of available liquidity that is currently borrowed
