@@ -1,16 +1,14 @@
 import express from 'express'
 import cors from 'cors'
+
 import { createAgent, streamAgentResponse } from './agent.js'
-import dotenv from 'dotenv'
+
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 // Get __dirname in ES module
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-// Load environment variables
-dotenv.config()
 
 const app = express()
 
