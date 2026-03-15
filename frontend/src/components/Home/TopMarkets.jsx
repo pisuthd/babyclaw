@@ -1,12 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useMarketsArray, useMarketsLoading, useMarketsError } from '../../hooks/useMarketsStore';
+import { usePrices } from '../../hooks/usePrices';
+import { formatUnits } from 'viem';
+
+// Token icons for display
+const TOKEN_ICONS = {
+  CELO: '/celo-icon.png',
+  BABY: '/babyclaw-icon.png',
+  "USD₮": '/usdt-icon.png',
+};
 
 function TopMarkets() {
+  const markets = useMarketsArray();
+  const isLoading = useMarketsLoading();
+  const error = useMarketsError();
+  const { prices } = usePrices();
   
-  const [markets, setMarkets] = useState([
-    { asset: '🔵 USDC', symbol: 'USDC', supplyApy: 8.5, borrowApy: 10.2, totalSupply: 25450, totalBorrowed: 12380, utilization: 48.6 },
-    { asset: '🟠 USDT', symbol: 'USDT', supplyApy: 7.8, borrowApy: 9.5, totalSupply: 18920, totalBorrowed: 11250, utilization: 59.5 },
-    { asset: '🟢 USDm', symbol: 'USDm', supplyApy: 9.2, borrowApy: 11.8, totalSupply: 22150, totalBorrowed: 15890, utilization: 71.7 },
-  ]);
+  // Format markets for display, sorted by supply APY (highest first)
+  const formattedMarkets = markets
+    .map(market => {
+      const price = prices[market.symbol];
+      const totalSupplyToken = parseFloat(formatUnits(market.stats.totalSupply, market.decimals));
+      const totalBorrowsToken = parseFloat(formatUnits(market.stats.totalBorrows, market.decimals));
+      
+      console.log("market.symbol-->", market.symbol)
+
+      return {
+        icon: TOKEN_ICONS[market.symbol] || '/babyclaw-icon.png',
+        symbol: market.symbol,
+        supplyApy: market.rates.supplyApy,
+        borrowApy: market.rates.borrowApy,
+        totalSupply: price ? totalSupplyToken * price : 0,
+        totalBorrowed: price ? totalBorrowsToken * price : 0,
+        utilization: market.stats.utilizationRate * 100,
+      };
+    })
+    .sort((a, b) => b.supplyApy - a.supplyApy);
+
+  const formatApy = (apy) => {
+    if (apy === 0) return '0.00%';
+    return `${apy.toFixed(2)}%`;
+  };
 
   const getUtilizationClass = (util) => {
     if (util < 60) return 'text-green-500';
@@ -37,21 +70,50 @@ function TopMarkets() {
               </tr>
             </thead>
             <tbody>
-              {markets.map((market, index) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={6} className="px-4 md:px-5 py-8 text-center text-text-muted">
+                    Loading markets...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={6} className="px-4 md:px-5 py-8 text-center text-red-500">
+                    Error loading markets: {error}
+                  </td>
+                </tr>
+              ) : formattedMarkets.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 md:px-5 py-8 text-center text-text-muted">
+                    No markets available
+                  </td>
+                </tr>
+              ) : (
+                formattedMarkets.map((market, index) => (
                 <tr
                   key={index}
                   className="border-b border-border-color hover:bg-accent-cyan/5 transition-all hover:scale-[1.01]"
                 >
-                  <td className="px-4 md:px-5 py-4 md:py-5 font-semibold text-base md:text-lg text-text-primary">{market.asset}</td>
-                  <td className="px-4 md:px-5 py-4 md:py-5 font-medium text-accent-cyan font-space">{market.supplyApy}%</td>
-                  <td className="px-4 md:px-5 py-4 md:py-5 font-medium text-accent-cyan font-space">{market.borrowApy}%</td>
+                  <td className="px-4 md:px-5 py-4 md:py-5">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={market.icon} 
+                        alt={market.symbol} 
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <span className="font-semibold text-base md:text-lg text-text-primary">{market.symbol}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 md:px-5 py-4 md:py-5 font-medium text-accent-cyan font-space">{formatApy(market.supplyApy)}</td>
+                  <td className="px-4 md:px-5 py-4 md:py-5 font-medium text-accent-cyan font-space">{formatApy(market.borrowApy)}</td>
                   <td className="px-4 md:px-5 py-4 md:py-5 font-medium text-text-secondary font-space">{formatCurrency(market.totalSupply)}</td>
                   <td className="px-4 md:px-5 py-4 md:py-5 font-medium text-text-secondary font-space">{formatCurrency(market.totalBorrowed)}</td>
                   <td className={`px-4 md:px-5 py-4 md:py-5 font-semibold font-space ${getUtilizationClass(market.utilization)}`}>
-                    {market.utilization}%
+                    {market.utilization.toFixed(2)}%
                   </td>
                 </tr>
-              ))}
+                ))
+              )}
             </tbody>
           </table>
         </div>

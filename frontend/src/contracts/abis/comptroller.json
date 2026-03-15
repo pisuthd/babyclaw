@@ -1,0 +1,70 @@
+[
+  {
+    "inputs": [
+      { "name": "cToken", "type": "address" }
+    ],
+    "name": "markets",
+    "outputs": [
+      { "name": "isListed", "type": "bool" },
+      { "name": "collateralFactorMantissa", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllMarkets",
+    "outputs": [{ "name": "", "type": "address[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "name": "cTokens", "type": "address[]" }
+    ],
+    "name": "enterMarkets",
+    "outputs": [{ "name": "", "type": "uint256[]" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "name": "cToken", "type": "address" }
+    ],
+    "name": "exitMarket",
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "name": "account", "type": "address" }
+    ],
+    "name": "getAccountLiquidity",
+    "outputs": [
+      { "name": "error", "type": "uint256" },
+      { "name": "liquidity", "type": "uint256" },
+      { "name": "shortfall", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "name": "account", "type": "address" }
+    ],
+    "name": "getAssetsIn",
+    "outputs": [{ "name": "", "type": "address[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "name": "cToken", "type": "address" }
+    ],
+    "name": "checkMembership",
+    "outputs": [{ "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

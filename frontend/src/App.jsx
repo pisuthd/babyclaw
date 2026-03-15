@@ -7,6 +7,8 @@ import { Lounge } from './pages/Lounge';
 import { Markets } from './pages/Markets';
 import { Baby } from './pages/Baby';
 import { Portfolio } from './pages/Portfolio';
+import { usePrices } from './hooks/usePrices';
+import { useMarkets } from './hooks/useMarketsStore';
 
 const currentPageToComponent = {
   '/': Home,
@@ -17,6 +19,11 @@ const currentPageToComponent = {
 };
 
 function App() {
+  // Initialize prices on app load
+  usePrices();
+  
+  // Initialize markets on app load (with auto-refresh)
+  useMarkets();
 
   const [currentPage, setCurrentPage] = useState('/');
 
