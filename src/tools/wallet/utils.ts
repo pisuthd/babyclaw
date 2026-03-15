@@ -18,8 +18,8 @@ export async function fetchPrices(): Promise<Record<string, number>> {
     )
     const data = await response.json()
     
-    if (data.success && data.prices) {
-      return data.prices
+    if (data.success && data.data) {
+      return data.data
         .filter((price: any) => ['CELO', 'USDT'].includes(price.symbol))
         .reduce(
           (acc: Record<string, number>, price: any) => ({
