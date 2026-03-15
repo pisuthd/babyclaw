@@ -6,10 +6,8 @@
  */
 
 import { create } from 'zustand';
-import type { Market } from '../hooks/useMarkets.js';
-import type { MarketData } from '../hooks/useMarketsData.js';
 import { NATIVE_TOKEN, TOKEN_CONFIGS, CHAIN } from '../contracts/config.js';
-import { PublicClient, createPublicClient, http } from 'viem';
+import { createPublicClient, http } from 'viem';
 
 // cToken ABI (subset)
 const CTOKEN_ABI = [
@@ -83,7 +81,7 @@ const CTOKEN_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
-] as const;
+];
 
 // ERC20 ABI (subset)
 const ERC20_ABI = [
@@ -108,15 +106,12 @@ const ERC20_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
-] as const;
-
-// Re-export MarketData for convenience
-export type { MarketData };
+];
 
 // Public client for contract calls
-let publicClient: any;
+let publicClient;
 
-function getPublicClient(): any {
+function getPublicClient() {
   if (!publicClient) {
     publicClient = createPublicClient({
       chain: CHAIN,
@@ -129,18 +124,18 @@ function getPublicClient(): any {
 /**
  * Fetch cToken basic info (standalone function for use in store)
  */
-async function fetchMarketBasicInfo(marketAddress: `0x${string}`): Promise<{ underlying: `0x${string}`; symbol: string; name: string; decimals: number; isNative: boolean } | null> {
+async function fetchMarketBasicInfo(marketAddress) {
   try {
     const client = getPublicClient();
     
     // Try to get underlying address - if it fails, this is a native token market
-    let underlying: `0x${string}` | null = null;
+    let underlying = null;
     try {
       underlying = await client.readContract({
         address: marketAddress,
         abi: CTOKEN_ABI,
         functionName: 'underlying',
-      }) as `0x${string}`;
+      });
     } catch {
       // Native token markets don't have underlying() function
     }
@@ -150,26 +145,26 @@ async function fetchMarketBasicInfo(marketAddress: `0x${string}`): Promise<{ und
         address: marketAddress,
         abi: CTOKEN_ABI,
         functionName: 'symbol',
-      }) as Promise<string>,
+      }),
       client.readContract({
         address: marketAddress,
         abi: CTOKEN_ABI,
         functionName: 'name',
-      }) as Promise<string>,
+      }),
       client.readContract({
         address: marketAddress,
         abi: CTOKEN_ABI,
         functionName: 'decimals',
-      }) as Promise<number>,
+      }),
     ]);
 
     const isNative = !underlying;
 
     return {
-      underlying: underlying || '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as `0x${string}`,
-      symbol: symbol as string,
-      name: name as string,
-      decimals: decimals as number,
+      underlying: underlying || '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      symbol: symbol,
+      name: name,
+      decimals: decimals,
       isNative,
     };
   } catch (error) {
@@ -181,7 +176,7 @@ async function fetchMarketBasicInfo(marketAddress: `0x${string}`): Promise<{ und
 /**
  * Fetch token info (standalone function for use in store)
  */
-async function fetchTokenInfo(tokenAddress: `0x${string}`): Promise<{ symbol: string; name: string; decimals: number } | null> {
+async function fetchTokenInfo(tokenAddress) {
   try {
     const client = getPublicClient();
     
@@ -190,23 +185,23 @@ async function fetchTokenInfo(tokenAddress: `0x${string}`): Promise<{ symbol: st
         address: tokenAddress,
         abi: ERC20_ABI,
         functionName: 'symbol',
-      }) as Promise<string>,
+      }),
       client.readContract({
         address: tokenAddress,
         abi: ERC20_ABI,
         functionName: 'name',
-      }) as Promise<string>,
+      }),
       client.readContract({
         address: tokenAddress,
         abi: ERC20_ABI,
         functionName: 'decimals',
-      }) as Promise<number>,
+      }),
     ]);
 
     return {
-      symbol: symbol as string,
-      name: name as string,
-      decimals: decimals as number,
+      symbol: symbol,
+      name: name,
+      decimals: decimals,
     };
   } catch (error) {
     console.error(`Error fetching token info for ${tokenAddress}:`, error);
@@ -217,7 +212,7 @@ async function fetchTokenInfo(tokenAddress: `0x${string}`): Promise<{ symbol: st
 /**
  * Fetch market data (standalone function for use in store)
  */
-async function fetchMarketData(market: Market, client: any): Promise<MarketData | null> {
+async function fetchMarketData(market, client) {
   try {
     // CELO blocks per year (1 second block time = 31,536,000 blocks per year)
     const BLOCKS_PER_YEAR = 31536000n;
@@ -257,20 +252,20 @@ async function fetchMarketData(market: Market, client: any): Promise<MarketData 
       ]);
 
     // Convert block rate to APY
-    const blockRateToApy = (ratePerBlock: bigint): number => {
+    const blockRateToApy = (ratePerBlock) => {
       if (ratePerBlock === 0n) return 0;
       const ratePerYear = ratePerBlock * BLOCKS_PER_YEAR;
       const apy = (Number(ratePerYear) / 1e18) * 100;
       return apy;
     };
 
-    const supplyApy = blockRateToApy(supplyRate as bigint);
-    const borrowApy = blockRateToApy(borrowRate as bigint);
-    const availableLiquidity = cash as bigint;
-    const utilizationRate: number =
-      (totalBorrows as bigint) > 0n
-        ? Number(totalBorrows as bigint) /
-          Number((totalBorrows as bigint) + (cash as bigint))
+    const supplyApy = blockRateToApy(supplyRate);
+    const borrowApy = blockRateToApy(borrowRate);
+    const availableLiquidity = cash;
+    const utilizationRate =
+      totalBorrows > 0n
+        ? Number(totalBorrows) /
+          Number(totalBorrows + cash)
         : 0;
 
     // Calculate total supply in underlying tokens
@@ -281,69 +276,28 @@ async function fetchMarketData(market: Market, client: any): Promise<MarketData 
     return {
       ...market,
       rates: {
-        supplyRatePerBlock: supplyRate as bigint,
-        borrowRatePerBlock: borrowRate as bigint,
-        exchangeRateStored: exchangeRate as bigint,
+        supplyRatePerBlock: supplyRate,
+        borrowRatePerBlock: borrowRate,
+        exchangeRateStored: exchangeRate,
         supplyApy,
         borrowApy,
       },
       stats: {
-        cash: cash as bigint,
-        totalBorrows: totalBorrows as bigint,
+        cash: cash,
+        totalBorrows: totalBorrows,
         totalReserves: 0n,
-        totalSupply: totalSupplyUnderlying as bigint,
+        totalSupply: totalSupplyUnderlying,
         availableLiquidity,
         utilizationRate,
       },
-    } as MarketData;
+    };
   } catch (error) {
     console.error(`Error fetching market data for ${market.symbol}:`, error);
     return null;
   }
 }
 
-export interface MarketsState {
-  // Markets data: marketAddress -> MarketData
-  marketsData: Record<string, MarketData>;
-  
-  // Markets list
-  markets: Market[];
-  
-  // Loading state
-  isLoading: boolean;
-  
-  // Error state
-  error: string | null;
-  
-  // Last fetch timestamp
-  lastFetch: number;
-  
-  // Whether data has been fetched at least once
-  hasFetched: boolean;
-  
-  // Auto-refresh interval reference
-  refreshInterval: NodeJS.Timeout | null;
-  
-  // Fetch market data for all markets from market addresses
-  fetchMarketsDataFromAddresses: (marketAddresses: `0x${string}`[]) => Promise<void>;
-  
-  // Fetch market data for a specific market
-  fetchSingleMarketData: (marketAddress: `0x${string}`) => Promise<void>;
-  
-  // Start auto-refresh
-  startAutoRefresh: (intervalMs?: number) => void;
-  
-  // Stop auto-refresh
-  stopAutoRefresh: () => void;
-  
-  // Clear error
-  clearError: () => void;
-  
-  // Clear all data
-  clearAll: () => void;
-}
-
-export const useMarketsStore = create<MarketsState>((set, get) => ({
+export const useMarketsStore = create((set, get) => ({
   marketsData: {},
   markets: [],
   isLoading: false,
@@ -352,7 +306,7 @@ export const useMarketsStore = create<MarketsState>((set, get) => ({
   hasFetched: false,
   refreshInterval: null,
   
-  fetchMarketsDataFromAddresses: async (marketAddresses: `0x${string}`[]) => {
+  fetchMarketsDataFromAddresses: async (marketAddresses) => {
     const currentState = get();
     
     // Don't fetch if already loading
@@ -389,7 +343,7 @@ export const useMarketsStore = create<MarketsState>((set, get) => ({
           }
 
           // Step 3: Build Market object
-          const market: Market = {
+          const market = {
             address: marketAddress,
             symbol: tokenInfo.symbol,
             name: tokenInfo.name,
@@ -412,8 +366,8 @@ export const useMarketsStore = create<MarketsState>((set, get) => ({
       const results = await Promise.all(marketDataPromises);
       
       // Build the markets data map and markets list
-      const newMarketsData: Record<string, MarketData> = {};
-      const newMarkets: Market[] = [];
+      const newMarketsData = {};
+      const newMarkets = [];
       let successCount = 0;
       
       for (const result of results) {
@@ -452,7 +406,7 @@ export const useMarketsStore = create<MarketsState>((set, get) => ({
     }
   },
   
-  fetchSingleMarketData: async (marketAddress: `0x${string}`) => {
+  fetchSingleMarketData: async (marketAddress) => {
     try {
       const publicClient = getPublicClient();
       const state = get();
@@ -479,7 +433,7 @@ export const useMarketsStore = create<MarketsState>((set, get) => ({
     }
   },
   
-  startAutoRefresh: (intervalMs: number = 60_000) => {
+  startAutoRefresh: (intervalMs = 60_000) => {
     const state = get();
     
     // Clear existing interval if any
@@ -493,7 +447,7 @@ export const useMarketsStore = create<MarketsState>((set, get) => ({
       const { markets } = currentState;
       
       if (markets.length > 0) {
-        const marketAddresses = markets.map(m => m.address) as `0x${string}`[];
+        const marketAddresses = markets.map(m => m.address);
         await currentState.fetchMarketsDataFromAddresses(marketAddresses);
       }
     }, intervalMs);
@@ -527,25 +481,24 @@ export const useMarketsStore = create<MarketsState>((set, get) => ({
 }));
 
 // Selectors for convenient data access
-export const selectMarketsData = (state: MarketsState) => state.marketsData;
+export const selectMarketsData = (state) => state.marketsData;
 
-export const selectMarkets = (state: MarketsState) => state.markets;
+export const selectMarkets = (state) => state.markets;
 
-export const selectMarketsArray = (state: MarketsState): MarketData[] => 
-  Object.values(state.marketsData);
+export const selectMarketsArray = (state) => Object.values(state.marketsData);
 
-export const selectIsLoading = (state: MarketsState) => state.isLoading;
+export const selectIsLoading = (state) => state.isLoading;
 
-export const selectError = (state: MarketsState) => state.error;
+export const selectError = (state) => state.error;
 
-export const selectHasFetched = (state: MarketsState) => state.hasFetched;
+export const selectHasFetched = (state) => state.hasFetched;
 
-export const selectLastFetch = (state: MarketsState) => state.lastFetch;
+export const selectLastFetch = (state) => state.lastFetch;
 
 // Get market data by address
-export const selectMarketByAddress = (state: MarketsState, address: string) => 
+export const selectMarketByAddress = (state, address) => 
   state.marketsData[address.toLowerCase()] || state.marketsData[address];
 
 // Get market data by symbol
-export const selectMarketBySymbol = (state: MarketsState, symbol: string) => 
+export const selectMarketBySymbol = (state, symbol) => 
   Object.values(state.marketsData).find(m => m.symbol.toLowerCase() === symbol.toLowerCase());

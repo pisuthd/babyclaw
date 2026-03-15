@@ -1,30 +1,28 @@
 import { TOKEN_CONFIGS, CTOKEN_ADDRESSES, CHAIN } from '../contracts/config.js';
-import { type Address } from 'viem';
 
 /**
  * Market interface
+ * @typedef {Object} Market
+ * @property {string} address
+ * @property {string} symbol
+ * @property {string} name
+ * @property {number} decimals
+ * @property {string} underlyingAddress
+ * @property {boolean} isNative
  */
-export interface Market {
-  address: Address;
-  symbol: string;
-  name: string;
-  decimals: number;
-  underlyingAddress: Address;
-  isNative: boolean;
-}
 
 /**
  * Get all available markets
  */
-export function getAllMarkets(): Market[] {
+export function getAllMarkets() {
   return Object.entries(CTOKEN_ADDRESSES).map(([symbol, address]) => {
-    const config = TOKEN_CONFIGS[symbol as keyof typeof TOKEN_CONFIGS];
+    const config = TOKEN_CONFIGS[symbol];
     return {
       address,
       symbol,
       name: config?.name || symbol,
       decimals: config?.decimals || 18,
-      underlyingAddress: config?.address || ('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as Address),
+      underlyingAddress: config?.address || '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
       isNative: symbol === 'CELO',
     };
   });
@@ -33,28 +31,28 @@ export function getAllMarkets(): Market[] {
 /**
  * Get market by address
  */
-export function getMarketByAddress(address: Address): Market | undefined {
+export function getMarketByAddress(address) {
   return getAllMarkets().find(m => m.address.toLowerCase() === address.toLowerCase());
 }
 
 /**
  * Get market by symbol
  */
-export function getMarketBySymbol(symbol: string): Market | undefined {
+export function getMarketBySymbol(symbol) {
   return getAllMarkets().find(m => m.symbol.toLowerCase() === symbol.toLowerCase());
 }
 
 /**
  * Get cToken address by underlying token symbol
  */
-export function getCTokenAddress(symbol: string): Address | undefined {
-  return CTOKEN_ADDRESSES[symbol as keyof typeof CTOKEN_ADDRESSES];
+export function getCTokenAddress(symbol) {
+  return CTOKEN_ADDRESSES[symbol];
 }
 
 /**
  * Check if an address is a valid market
  */
-export function isValidMarket(address: Address): boolean {
+export function isValidMarket(address) {
   return Object.values(CTOKEN_ADDRESSES).some(
     addr => addr.toLowerCase() === address.toLowerCase()
   );
@@ -63,14 +61,14 @@ export function isValidMarket(address: Address): boolean {
 /**
  * Get all market symbols
  */
-export function getMarketSymbols(): string[] {
+export function getMarketSymbols() {
   return Object.keys(CTOKEN_ADDRESSES);
 }
 
 /**
  * Get all market addresses
  */
-export function getMarketAddresses(): Address[] {
+export function getMarketAddresses() {
   return Object.values(CTOKEN_ADDRESSES);
 }
 

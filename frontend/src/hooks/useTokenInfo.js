@@ -1,6 +1,5 @@
 import { useReadContract } from 'wagmi';
 import { TOKEN_CONFIGS, CHAIN } from '../contracts/config.js';
-import { type Address } from 'viem';
 
 // ERC20 ABI (subset)
 const ERC20_ABI = [
@@ -32,24 +31,13 @@ const ERC20_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
-] as const;
-
-/**
- * Token information interface
- */
-export interface TokenInfo {
-  address: Address;
-  symbol: string;
-  name: string;
-  decimals: number;
-  totalSupply?: bigint;
-}
+];
 
 /**
  * Get token info from local config (for known tokens)
  */
-export function getTokenInfoFromConfig(symbol: string): TokenInfo | undefined {
-  const config = TOKEN_CONFIGS[symbol as keyof typeof TOKEN_CONFIGS];
+export function getTokenInfoFromConfig(symbol) {
+  const config = TOKEN_CONFIGS[symbol];
   if (!config) return undefined;
 
   return {
@@ -65,9 +53,9 @@ export function getTokenInfoFromConfig(symbol: string): TokenInfo | undefined {
  * This can be used outside of React components
  */
 export async function fetchTokenInfo(
-  tokenAddress: Address,
-  publicClient: any
-): Promise<TokenInfo | null> {
+  tokenAddress,
+  publicClient
+) {
   try {
     // Skip if this is the native token address
     if (tokenAddress.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'.toLowerCase()) {
@@ -104,10 +92,10 @@ export async function fetchTokenInfo(
 
     return {
       address: tokenAddress,
-      symbol: symbol as string,
-      name: name as string,
-      decimals: decimals as number,
-      totalSupply: totalSupply as bigint,
+      symbol: symbol,
+      name: name,
+      decimals: decimals,
+      totalSupply: totalSupply,
     };
   } catch (error) {
     console.error(`Error fetching token info for ${tokenAddress}:`, error);
@@ -118,7 +106,7 @@ export async function fetchTokenInfo(
 /**
  * Hook to get token information
  */
-export function useTokenInfo(tokenAddress?: Address, tokenSymbol?: string) {
+export function useTokenInfo(tokenAddress, tokenSymbol) {
   // First try to get from config if symbol is provided
   const configInfo = tokenSymbol ? getTokenInfoFromConfig(tokenSymbol) : undefined;
 
@@ -128,11 +116,11 @@ export function useTokenInfo(tokenAddress?: Address, tokenSymbol?: string) {
   if (isNative) {
     return {
       data: {
-        address: tokenAddress!,
+        address: tokenAddress,
         symbol: 'CELO',
         name: 'CELO',
         decimals: 18,
-      } as TokenInfo,
+      },
       isLoading: false,
     };
   }
@@ -194,11 +182,11 @@ export function useTokenInfo(tokenAddress?: Address, tokenSymbol?: string) {
 
   const data = name && symbol && decimals !== undefined
     ? {
-        address: tokenAddress!,
-        symbol: symbol as string,
-        name: name as string,
-        decimals: decimals as number,
-        totalSupply: totalSupply as bigint,
+        address: tokenAddress,
+        symbol: symbol,
+        name: name,
+        decimals: decimals,
+        totalSupply: totalSupply,
       }
     : undefined;
 
@@ -211,7 +199,7 @@ export function useTokenInfo(tokenAddress?: Address, tokenSymbol?: string) {
 /**
  * Get all token info from config
  */
-export function getAllTokenInfo(): TokenInfo[] {
+export function getAllTokenInfo() {
   return Object.values(TOKEN_CONFIGS).map(config => ({
     address: config.address,
     symbol: config.symbol,

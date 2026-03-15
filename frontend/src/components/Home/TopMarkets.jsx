@@ -22,8 +22,6 @@ function TopMarkets() {
       const totalSupplyToken = parseFloat(formatUnits(market.stats.totalSupply, market.decimals));
       const totalBorrowsToken = parseFloat(formatUnits(market.stats.totalBorrows, market.decimals));
       
-      console.log("market.symbol-->", market.symbol)
-
       return {
         icon: TOKEN_ICONS[market.symbol] || '/babyclaw-icon.png',
         symbol: market.symbol,

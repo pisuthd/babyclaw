@@ -5,15 +5,12 @@
  */
 
 import { useEffect, useCallback, useRef, useMemo } from 'react';
-import { useMarketsStore, type MarketData, type MarketsState } from '../store/markets.js';
+import { useMarketsStore } from '../store/markets.js';
 import { getAllCTokenAddresses } from '../contracts/config.js';
-
-// Re-export types for convenience
-export type { MarketData, MarketsState };
 
 // Global initialization flag to prevent duplicate initialization
 let isInitialized = false;
-let autoRefreshInterval: NodeJS.Timeout | null = null;
+let autoRefreshInterval = null;
 
 /**
  * Main hook to access all markets data from the store
@@ -23,7 +20,7 @@ let autoRefreshInterval: NodeJS.Timeout | null = null;
  * const { marketsData, markets, isLoading, error, lastFetch } = useMarkets();
  * const celoMarket = marketsData['0x2591...'];
  */
-export function useMarkets(): MarketsState {
+export function useMarkets() {
   // Fetch markets on first use (globally)
   useEffect(() => {
     if (!isInitialized) {
@@ -42,7 +39,7 @@ export function useMarkets(): MarketsState {
       autoRefreshInterval = setInterval(() => {
         const state = useMarketsStore.getState();
         if (state.markets.length > 0) {
-          const marketAddresses = state.markets.map(m => m.address) as `0x${string}`[];
+          const marketAddresses = state.markets.map(m => m.address);
           state.fetchMarketsDataFromAddresses(marketAddresses);
         }
       }, 60_000);
@@ -66,7 +63,7 @@ export function useMarkets(): MarketsState {
  *   console.log(market.symbol, market.rates.supplyApy);
  * });
  */
-export function useMarketsArray(): MarketData[] {
+export function useMarketsArray() {
   const marketsData = useMarketsStore(state => state.marketsData);
   return useMemo(() => Object.values(marketsData), [marketsData]);
 }
@@ -81,7 +78,7 @@ export function useMarketsArray(): MarketData[] {
  * const market = useMarketByAddress('0x2591d179a0B1dB1c804210E111035a3a13c95a48');
  * console.log(market?.rates.supplyApy);
  */
-export function useMarketByAddress(address: string): MarketData | undefined {
+export function useMarketByAddress(address) {
   return useMarketsStore(state => 
     state.marketsData[address.toLowerCase()] || state.marketsData[address]
   );
@@ -97,7 +94,7 @@ export function useMarketByAddress(address: string): MarketData | undefined {
  * const celoMarket = useMarketBySymbol('CELO');
  * console.log(celoMarket?.rates.supplyApy);
  */
-export function useMarketBySymbol(symbol: string): MarketData | undefined {
+export function useMarketBySymbol(symbol) {
   return useMarketsStore(state => 
     Object.values(state.marketsData).find(m => m.symbol.toLowerCase() === symbol.toLowerCase())
   );
@@ -119,37 +116,37 @@ export function useMarketsList() {
 /**
  * Check if markets are loading
  */
-export function useMarketsLoading(): boolean {
+export function useMarketsLoading() {
   return useMarketsStore(state => state.isLoading);
 }
 
 /**
  * Get markets error message
  */
-export function useMarketsError(): string | null {
+export function useMarketsError() {
   return useMarketsStore(state => state.error);
 }
 
 /**
  * Check if markets have been fetched at least once
  */
-export function useMarketsFetched(): boolean {
+export function useMarketsFetched() {
   return useMarketsStore(state => state.hasFetched);
 }
 
 /**
  * Get last fetch timestamp
  */
-export function useMarketsLastFetch(): number {
+export function useMarketsLastFetch() {
   return useMarketsStore(state => state.lastFetch);
 }
 
 /**
  * Manually refresh markets
  */
-export function useRefreshMarkets(): () => Promise<void> {
+export function useRefreshMarkets() {
   return useMarketsStore(state => async () => {
-    const marketAddresses = state.markets.map(m => m.address) as `0x${string}`[];
+    const marketAddresses = state.markets.map(m => m.address);
     await state.fetchMarketsDataFromAddresses(marketAddresses);
   });
 }
@@ -157,6 +154,6 @@ export function useRefreshMarkets(): () => Promise<void> {
 /**
  * Refresh a single market by address
  */
-export function useRefreshMarket(): (address: `0x${string}`) => Promise<void> {
+export function useRefreshMarket() {
   return useMarketsStore(state => state.fetchSingleMarketData);
 }

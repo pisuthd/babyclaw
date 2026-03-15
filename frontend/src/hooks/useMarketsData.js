@@ -1,30 +1,32 @@
 import { useMemo } from 'react';
 import { useReadContract } from 'wagmi';
-import { formatUnits, parseUnits, type Address } from 'viem';
-import cTokenAbi from '../contracts/abis/cToken.json' with { type: 'json' };
-import type { Market } from './useMarkets.js';
+import { formatUnits, parseUnits } from 'viem';
+import cTokenAbi from '../contracts/abis/cToken.json';
 import { CHAIN } from '../contracts/config.js';
 
 /**
  * Complete market data including rates and statistics
+ * @typedef {Object} MarketData
+ * @property {Object} rates
+ * @property {bigint} rates.supplyRatePerBlock
+ * @property {bigint} rates.borrowRatePerBlock
+ * @property {bigint} rates.exchangeRateStored
+ * @property {number} rates.supplyApy
+ * @property {number} rates.borrowApy
+ * @property {Object} stats
+ * @property {bigint} stats.cash
+ * @property {bigint} stats.totalBorrows
+ * @property {bigint} stats.totalReserves
+ * @property {bigint} stats.totalSupply
+ * @property {bigint} stats.availableLiquidity
+ * @property {number} stats.utilizationRate
+ * @property {string} address
+ * @property {string} symbol
+ * @property {string} name
+ * @property {number} decimals
+ * @property {string} underlyingAddress
+ * @property {boolean} isNative
  */
-export interface MarketData extends Market {
-  rates: {
-    supplyRatePerBlock: bigint;
-    borrowRatePerBlock: bigint;
-    exchangeRateStored: bigint;
-    supplyApy: number;
-    borrowApy: number;
-  };
-  stats: {
-    cash: bigint;
-    totalBorrows: bigint;
-    totalReserves: bigint;
-    totalSupply: bigint;
-    availableLiquidity: bigint;
-    utilizationRate: number;
-  };
-}
 
 // CELO blocks per year (1 second block time = 31,536,000 blocks per year)
 const BLOCKS_PER_YEAR = 31536000n;
@@ -33,7 +35,7 @@ const BLOCKS_PER_YEAR = 31536000n;
  * Convert block rate to APY
  * CELO: 1 second per block = 31,536,000 blocks per year
  */
-function blockRateToApy(ratePerBlock: bigint): number {
+function blockRateToApy(ratePerBlock) {
   if (ratePerBlock === 0n) return 0;
 
   const ratePerYear = ratePerBlock * BLOCKS_PER_YEAR;
@@ -46,9 +48,9 @@ function blockRateToApy(ratePerBlock: bigint): number {
  * This can be used outside of React components (e.g., in Zustand store)
  */
 export async function fetchMarketData(
-  market: Market,
-  publicClient: any
-): Promise<MarketData | null> {
+  market,
+  publicClient
+) {
   try {
     const [supplyRate, borrowRate, exchangeRate, cash, totalBorrows, totalSupply] =
       await Promise.all([
@@ -84,13 +86,13 @@ export async function fetchMarketData(
         }),
       ]);
 
-    const supplyApy = blockRateToApy(supplyRate as bigint);
-    const borrowApy = blockRateToApy(borrowRate as bigint);
-    const availableLiquidity = cash as bigint;
+    const supplyApy = blockRateToApy(supplyRate);
+    const borrowApy = blockRateToApy(borrowRate);
+    const availableLiquidity = cash;
     const utilizationRate =
-      (totalBorrows as bigint) > 0n
-        ? Number(totalBorrows as bigint) /
-          Number((totalBorrows as bigint) + (cash as bigint))
+      totalBorrows > 0n
+        ? Number(totalBorrows) /
+          Number(totalBorrows + cash)
         : 0;
 
     // Calculate total supply in underlying tokens
@@ -101,21 +103,21 @@ export async function fetchMarketData(
     return {
       ...market,
       rates: {
-        supplyRatePerBlock: supplyRate as bigint,
-        borrowRatePerBlock: borrowRate as bigint,
-        exchangeRateStored: exchangeRate as bigint,
+        supplyRatePerBlock: supplyRate,
+        borrowRatePerBlock: borrowRate,
+        exchangeRateStored: exchangeRate,
         supplyApy,
         borrowApy,
       },
       stats: {
-        cash: cash as bigint,
-        totalBorrows: totalBorrows as bigint,
+        cash,
+        totalBorrows,
         totalReserves: 0n, // Not fetched in this version
-        totalSupply: totalSupplyUnderlying as bigint,
+        totalSupply: totalSupplyUnderlying,
         availableLiquidity,
         utilizationRate,
       },
-    } as MarketData;
+    };
   } catch (error) {
     console.error(`Error fetching market data for ${market.symbol}:`, error);
     return null;
@@ -125,7 +127,7 @@ export async function fetchMarketData(
 /**
  * Hook to get complete market data for a single market
  */
-export function useMarketData(market: Market | undefined) {
+export function useMarketData(market) {
   const { data: supplyRate, isLoading: supplyRateLoading } = useReadContract({
     address: market?.address,
     abi: cTokenAbi,
@@ -208,12 +210,12 @@ export function useMarketData(market: Market | undefined) {
       return undefined;
     }
 
-    const supplyApy = blockRateToApy(supplyRate as bigint);
-    const borrowApy = blockRateToApy(borrowRate as bigint);
-    const availableLiquidity = (cash as bigint) as bigint;
-    const totalBorrowsValue = totalBorrows as bigint | undefined;
+    const supplyApy = blockRateToApy(supplyRate);
+    const borrowApy = blockRateToApy(borrowRate);
+    const availableLiquidity = cash;
+    const totalBorrowsValue = totalBorrows;
     const utilizationRate = totalBorrowsValue && totalBorrowsValue > 0n
-      ? Number(totalBorrowsValue) / Number(totalBorrowsValue + (cash as bigint))
+      ? Number(totalBorrowsValue) / Number(totalBorrowsValue + cash)
       : 0;
 
     // Calculate total supply in underlying tokens
@@ -224,21 +226,21 @@ export function useMarketData(market: Market | undefined) {
     return {
       ...market,
       rates: {
-        supplyRatePerBlock: supplyRate as bigint,
-        borrowRatePerBlock: borrowRate as bigint,
-        exchangeRateStored: exchangeRate as bigint,
+        supplyRatePerBlock: supplyRate,
+        borrowRatePerBlock: borrowRate,
+        exchangeRateStored: exchangeRate,
         supplyApy,
         borrowApy,
       },
       stats: {
-        cash: cash as bigint,
-        totalBorrows: totalBorrows as bigint,
-        totalReserves: totalReserves as bigint,
-        totalSupply: totalSupplyUnderlying as bigint,
+        cash,
+        totalBorrows,
+        totalReserves: totalReserves,
+        totalSupply: totalSupplyUnderlying,
         availableLiquidity,
         utilizationRate,
       },
-    } as MarketData;
+    };
   }, [market, supplyRate, borrowRate, exchangeRate, cash, totalBorrows, totalSupply, totalReserves]);
 
   const isLoading = supplyRateLoading || borrowRateLoading || exchangeRateLoading ||
@@ -253,7 +255,7 @@ export function useMarketData(market: Market | undefined) {
 /**
  * Format market data for display
  */
-export function formatMarketData(marketData: MarketData, prices: Record<string, number>) {
+export function formatMarketData(marketData, prices) {
   const tokenPrice = prices[marketData.symbol] || 0;
   
   return {

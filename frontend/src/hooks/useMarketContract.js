@@ -1,42 +1,12 @@
 import { useReadContract } from 'wagmi';
 import { TOKEN_CONFIGS, CTOKEN_ADDRESSES, CHAIN } from '../contracts/config.js';
-import cTokenAbi from '../contracts/abis/cToken.json' with { type: 'json' };
-import { type Address } from 'viem';
-
-/**
- * Types for market data
- */
-export interface MarketBasicInfo {
-  underlying: Address;
-  symbol: string;
-  name: string;
-  decimals: number;
-  isNative?: boolean;
-}
-
-export interface MarketRates {
-  supplyRatePerBlock: bigint;
-  borrowRatePerBlock: bigint;
-  exchangeRateStored: bigint;
-}
-
-export interface MarketStats {
-  cash: bigint;
-  totalBorrows: bigint;
-  totalReserves: bigint;
-  totalSupply: bigint;
-}
-
-export interface UserMarketData {
-  balanceOf: bigint;
-  borrowBalanceStored: bigint;
-}
+import cTokenAbi from '../contracts/abis/cToken.json';
 
 /**
  * Hook to get basic market information (underlying, symbol, name, decimals)
  * Handles both ERC-20 tokens and native tokens (CELO)
  */
-export function useMarketBasicInfo(marketAddress?: Address, tokenSymbol?: string) {
+export function useMarketBasicInfo(marketAddress, tokenSymbol) {
   // Try to get underlying address - if it fails, this is a native token market
   const { data: underlying, isLoading: underlyingLoading, error: underlyingError } = useReadContract({
     address: marketAddress,
@@ -91,11 +61,11 @@ export function useMarketBasicInfo(marketAddress?: Address, tokenSymbol?: string
   const data = symbol && name && decimals !== undefined
     ? {
         underlying: isNative 
-          ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as Address // Zero address for native
-          : (underlying as Address),
-        symbol: symbol as string,
-        name: name as string,
-        decimals: decimals as number,
+          ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' // Zero address for native
+          : underlying,
+        symbol: symbol,
+        name: name,
+        decimals: decimals,
         isNative,
       }
     : undefined;
@@ -110,7 +80,7 @@ export function useMarketBasicInfo(marketAddress?: Address, tokenSymbol?: string
 /**
  * Hook to get market rates (supply, borrow, exchange rate)
  */
-export function useMarketRates(marketAddress?: Address) {
+export function useMarketRates(marketAddress) {
   const { data: supplyRatePerBlock, isLoading: supplyLoading } = useReadContract({
     address: marketAddress,
     abi: cTokenAbi,
@@ -148,9 +118,9 @@ export function useMarketRates(marketAddress?: Address) {
 
   const data = supplyRatePerBlock && borrowRatePerBlock && exchangeRateStored
     ? {
-        supplyRatePerBlock: supplyRatePerBlock as bigint,
-        borrowRatePerBlock: borrowRatePerBlock as bigint,
-        exchangeRateStored: exchangeRateStored as bigint,
+        supplyRatePerBlock: supplyRatePerBlock,
+        borrowRatePerBlock: borrowRatePerBlock,
+        exchangeRateStored: exchangeRateStored,
       }
     : undefined;
 
@@ -163,7 +133,7 @@ export function useMarketRates(marketAddress?: Address) {
 /**
  * Hook to get market statistics (cash, borrows, reserves, supply)
  */
-export function useMarketStats(marketAddress?: Address) {
+export function useMarketStats(marketAddress) {
   const { data: cash, isLoading: cashLoading } = useReadContract({
     address: marketAddress,
     abi: cTokenAbi,
@@ -212,10 +182,10 @@ export function useMarketStats(marketAddress?: Address) {
 
   const data = cash !== undefined && totalBorrows !== undefined && totalReserves !== undefined && totalSupply !== undefined
     ? {
-        cash: cash as bigint,
-        totalBorrows: totalBorrows as bigint,
-        totalReserves: totalReserves as bigint,
-        totalSupply: totalSupply as bigint,
+        cash: cash,
+        totalBorrows: totalBorrows,
+        totalReserves: totalReserves,
+        totalSupply: totalSupply,
       }
     : undefined;
 
@@ -228,7 +198,7 @@ export function useMarketStats(marketAddress?: Address) {
 /**
  * Hook to get user's market data (balance, borrow balance)
  */
-export function useUserMarketData(marketAddress?: Address, userAddress?: Address) {
+export function useUserMarketData(marketAddress, userAddress) {
   const { data: balanceOf, isLoading: balanceLoading } = useReadContract({
     address: marketAddress,
     abi: cTokenAbi,
@@ -257,8 +227,8 @@ export function useUserMarketData(marketAddress?: Address, userAddress?: Address
 
   const data = balanceOf !== undefined && borrowBalanceStored !== undefined
     ? {
-        balanceOf: balanceOf as bigint,
-        borrowBalanceStored: borrowBalanceStored as bigint,
+        balanceOf: balanceOf,
+        borrowBalanceStored: borrowBalanceStored,
       }
     : undefined;
 
@@ -271,20 +241,20 @@ export function useUserMarketData(marketAddress?: Address, userAddress?: Address
 /**
  * Get market address from token symbol
  */
-export function getMarketAddressByToken(symbol: string): Address | undefined {
-  return CTOKEN_ADDRESSES[symbol as keyof typeof CTOKEN_ADDRESSES];
+export function getMarketAddressByToken(symbol) {
+  return CTOKEN_ADDRESSES[symbol];
 }
 
 /**
  * Get all market addresses
  */
-export function getAllMarketAddresses(): Address[] {
+export function getAllMarketAddresses() {
   return Object.values(CTOKEN_ADDRESSES);
 }
 
 /**
  * Get all market symbols
  */
-export function getAllMarketSymbols(): string[] {
+export function getAllMarketSymbols() {
   return Object.keys(CTOKEN_ADDRESSES);
 }

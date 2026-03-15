@@ -4,10 +4,7 @@
  */
 
 import { useEffect } from 'react';
-import { usePricesStore, type PricesState } from '../store/priceStore.js';
-
-// Re-export PricesState for convenience
-export type { PricesState };
+import { usePricesStore } from '../store/priceStore.js';
 
 /**
  * Main hook to access all prices from the store
@@ -18,9 +15,7 @@ export type { PricesState };
  * const kubPrice = prices['KUB']; // 0.9435...
  * const kubData = priceData['KUB']; // Full data with 24h change
  */
-export function usePrices(): PricesState & {
-  initializePrices: () => void;
-} {
+export function usePrices() {
   const store = usePricesStore();
   
   // Fetch prices on first use (only once)
@@ -46,7 +41,7 @@ export function usePrices(): PricesState & {
  * const kubPrice = usePrice('KUB'); // 0.9435...
  * const usdtPrice = usePrice('USD₮'); // 1.00007...
  */
-export function usePrice(symbol: string): number | undefined {
+export function usePrice(symbol) {
   return usePricesStore((state) => state.prices[symbol]);
 }
 
@@ -60,27 +55,27 @@ export function usePrice(symbol: string): number | undefined {
  * const kubData = usePriceData('KUB');
  * console.log(kubData.percent_change_24h); // 24h percentage change
  */
-export function usePriceData(symbol: string) {
+export function usePriceData(symbol) {
   return usePricesStore((state) => state.priceData[symbol]);
 }
 
 /**
  * Check if prices are loading
  */
-export function usePricesLoading(): boolean {
+export function usePricesLoading() {
   return usePricesStore((state) => state.isLoading);
 }
 
 /**
  * Get price error message
  */
-export function usePricesError(): string | null {
+export function usePricesError() {
   return usePricesStore((state) => state.error);
 }
 
 /**
  * Manually refresh prices
  */
-export function useRefreshPrices(): () => Promise<void> {
+export function useRefreshPrices() {
   return usePricesStore((state) => state.fetchPrices);
 }

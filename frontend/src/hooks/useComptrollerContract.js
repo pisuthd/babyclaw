@@ -1,6 +1,6 @@
 import { useReadContract } from 'wagmi';
 import { COMPTROLLER_ADDRESS } from '../contracts/config.js';
-import comptrollerAbi from '../contracts/abis/comptroller.json' with { type: 'json' };
+import comptrollerAbi from '../contracts/abis/comptroller.json';
 
 /**
  * Hook to interact with the Comptroller contract
@@ -21,7 +21,7 @@ export function useComptrollerContract() {
   });
 
   return {
-    markets: markets as `0x${string}`[] | undefined,
+    markets,
     isLoading,
     error,
     refetch,
@@ -32,7 +32,7 @@ export function useComptrollerContract() {
 /**
  * Hook to get markets in which a user has positions
  */
-export function useUserMarkets(userAddress?: `0x${string}`) {
+export function useUserMarkets(userAddress) {
   const { data: userMarkets, isLoading, error } = useReadContract({
     address: COMPTROLLER_ADDRESS,
     abi: comptrollerAbi,
@@ -46,7 +46,7 @@ export function useUserMarkets(userAddress?: `0x${string}`) {
   });
 
   return {
-    userMarkets: userMarkets as `0x${string}`[] | undefined,
+    userMarkets,
     isLoading,
     error,
   };
@@ -55,7 +55,7 @@ export function useUserMarkets(userAddress?: `0x${string}`) {
 /**
  * Hook to check if a market is listed and get its collateral factor
  */
-export function useMarketInfo(marketAddress?: `0x${string}`) {
+export function useMarketInfo(marketAddress) {
   const { data, isLoading, error } = useReadContract({
     address: COMPTROLLER_ADDRESS,
     abi: comptrollerAbi,
@@ -68,7 +68,7 @@ export function useMarketInfo(marketAddress?: `0x${string}`) {
     },
   });
 
-  const [isListed, collateralFactor] = (data as [boolean, bigint]) || [false, 0n];
+  const [isListed, collateralFactor] = data || [false, 0n];
 
   return {
     isListed,
@@ -84,7 +84,7 @@ export function useMarketInfo(marketAddress?: `0x${string}`) {
 /**
  * Hook to get user account liquidity
  */
-export function useAccountLiquidity(userAddress?: `0x${string}`) {
+export function useAccountLiquidity(userAddress) {
   const { data, isLoading, error } = useReadContract({
     address: COMPTROLLER_ADDRESS,
     abi: comptrollerAbi,
@@ -97,7 +97,7 @@ export function useAccountLiquidity(userAddress?: `0x${string}`) {
     },
   });
 
-  const [errorCode, liquidity, shortfall] = (data as [bigint, bigint, bigint]) || [0n, 0n, 0n];
+  const [errorCode, liquidity, shortfall] = data || [0n, 0n, 0n];
 
   return {
     errorCode,
