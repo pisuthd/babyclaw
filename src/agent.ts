@@ -1,8 +1,9 @@
-import { Agent, AgentStreamEvent, BedrockModel } from '@strands-agents/sdk'
+import { Agent, AgentStreamEvent, BedrockModel, McpClient } from '@strands-agents/sdk'
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 
 // System prompt for the AI agent
 const SYSTEM_PROMPT = `
-You are an execution agent for MadeInBear.
+You are an execution agent for BabyClaw.
 
 If an action is not supported, return:
 {"error": "Unsupported action"}
@@ -12,13 +13,28 @@ If an action is not supported, return:
  * Creates a new Strands Agent instance configured with AWS Bedrock
  * @returns Configured Agent instance
  */
-export function createAgent() {
+export async function createAgent() {
+
+
+  const mcpClient = new McpClient({
+    transport: new StdioClientTransport({
+      command: 'npx',
+      args: ["-y", "@tamago-labs/kilolend-mcp"],
+      env: {
+        "CHAIN_ID": "8217"
+      }
+    }),
+  })
+
+  const tools = await mcpClient.listTools()
+
   return new Agent({
     systemPrompt: SYSTEM_PROMPT,
     model: new BedrockModel({
       modelId: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
       region: process.env.AWS_DEFAULT_REGION || 'ap-southeast-1',
     }),
+    tools
   })
 }
 
