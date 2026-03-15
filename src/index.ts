@@ -56,7 +56,7 @@ app.post('/stream', async (req, res) => {
 
     try {
         // Create agent instance
-        const agent = createAgent()
+        const agent = await createAgent()
 
         // Stream the agent's response
         for await (const chunk of streamAgentResponse(prompt, agent)) {
