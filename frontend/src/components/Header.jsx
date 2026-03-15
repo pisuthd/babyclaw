@@ -5,7 +5,7 @@ function Header({ onNavigate }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { label: 'Baby Lounge', path: '/lounge' },
+    { label: 'Lounge', path: '/lounge' },
     { label: 'Markets', path: '/markets' },
     // { label: '$BABY', path: '/baby' },
     { label: 'Portfolio', path: '/portfolio' },
