@@ -11,8 +11,12 @@ import { sendNativeTokenTool } from './wallet/sendNativeToken.js'
 import { sendERC20TokenTool } from './wallet/sendERC20Token.js'
 import { getPricesTool } from './wallet/getPrices.js'
 
+// Import lending tools
+import { LENDING_TOOLS } from './wallet/lending/index.js'
+
 // Re-export individual tools
 export { getWalletInfoTool, sendNativeTokenTool, sendERC20TokenTool, getPricesTool }
+export { LENDING_TOOLS }
 
 // Export all tools as a flat array for the agent
 export const walletTools = [
@@ -20,4 +24,5 @@ export const walletTools = [
   sendNativeTokenTool,
   sendERC20TokenTool,
   getPricesTool,
+  ...LENDING_TOOLS,
 ]

@@ -9,7 +9,7 @@ import { getPublicClient } from './clients.js'
 
 /**
  * Fetch token prices from the price API
- * Only returns prices for CELO and USDT (supported tokens)
+ * Returns prices for CELO, USDT, and BABY 
  */
 export async function fetchPrices(): Promise<Record<string, number>> {
   try {
@@ -18,21 +18,28 @@ export async function fetchPrices(): Promise<Record<string, number>> {
     )
     const data = await response.json()
     
+    const prices: Record<string, number> = {}
+    
     if (data.success && data.data) {
-      return data.data
+      // Get CELO and USDT from API
+      data.data
         .filter((price: any) => ['CELO', 'USDT'].includes(price.symbol))
-        .reduce(
-          (acc: Record<string, number>, price: any) => ({
-            ...acc,
-            [price.symbol]: price.price || 0,
-          }),
-          {}
-        )
+        .forEach((price: any) => {
+          prices[price.symbol] = price.price || 0
+        })
     }
-    return {}
+    
+    // Add hardcoded BABY price for now
+    prices['BABY'] = 0.0000075
+    
+    
+    return prices
   } catch (error) {
     console.warn('Failed to fetch prices:', error)
-    return {}
+    // Return hardcoded BABY price even on API failure
+    return {
+      'BABY': 0.0000075
+    }
   }
 }
 
