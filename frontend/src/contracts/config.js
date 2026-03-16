@@ -28,6 +28,7 @@ export const TOKEN_CONFIGS = {
   CELO: { address: TOKEN_ADDRESSES.CELO, symbol: 'CELO', decimals: 18, name: 'CELO' },
   BABY: { address: TOKEN_ADDRESSES.BABY, symbol: 'BABY', decimals: 18, name: 'BabyToken' },
   USDT: { address: TOKEN_ADDRESSES.USDT, symbol: 'USDT', decimals: 6, name: 'Tether USD' },
+  "USD₮": { address: TOKEN_ADDRESSES.USDT, symbol: 'USD₮', decimals: 6, name: 'Tether USD' },
 };
 
 // BabyClaw Lending Protocol addresses (CELO chain)
@@ -43,6 +44,7 @@ export const CTOKEN_ADDRESSES = {
   CELO: LENDING_CONFIG.cCELO,
   BABY: LENDING_CONFIG.cBABY,
   USDT: LENDING_CONFIG.cUSDT,
+  "USD₮": LENDING_CONFIG.cUSDT,
 };
 
 // Comptroller address

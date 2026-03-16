@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount, usePublicClient, useWaitForTransactionReceipt } from 'wagmi';
 import { useLendingActions } from '../../hooks/useLendingActions';
 import { usePrices } from '../../hooks/usePrices';
 import { useTokenAllowance } from '../../hooks/useTokenAllowance';
@@ -14,6 +14,7 @@ export function ActionModal({ isOpen, onClose, type, position }) {
   const [txHash, setTxHash] = useState(undefined);
   
   const { address } = useAccount();
+  const publicClient = usePublicClient();
   const { prices } = usePrices();
   const { withdraw, repay, approve } = useLendingActions();
 
@@ -113,6 +114,7 @@ export function ActionModal({ isOpen, onClose, type, position }) {
         
         // Approve ERC20 token if needed
         if (needsApproval && !isNative) {
+          console.log('Approving token...');
           const approvalResult = await approve(
             position.symbol, 
             CTOKEN_ADDRESSES[position.symbol], 
@@ -121,7 +123,10 @@ export function ActionModal({ isOpen, onClose, type, position }) {
           if (approvalResult.status === 'failed') {
             throw new Error(approvalResult.error || 'Approval failed');
           }
-          console.log('Approval transaction sent, hash:', approvalResult.hash);
+          // Wait for approval to confirm
+          console.log('Waiting for approval confirmation...');
+          await publicClient.waitForTransactionReceipt({ hash: approvalResult.hash });
+          console.log('Approval confirmed!');
         }
       }
 

@@ -23,6 +23,13 @@ export const TOKEN_CONFIG = {
     decimals: 6,
     icon: '/usdt-icon.png',
   },
+  "USD₮": {
+    address: '0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e',
+    name: 'Tether USD',
+    symbol: 'USD₮',
+    decimals: 6,
+    icon: '/usdt-icon.png',
+  },
 };
 
 // Token icons mapping

@@ -16,6 +16,7 @@ export const MarketDetail = ({ market, onBack }) => {
   const { prices } = usePrices();
   const { data: userBalance, isLoading: balanceLoading } = useUserBalance(market.symbol);
   const { borrowLimitUSD, healthFactor, isLoading: borrowLimitLoading } = useBorrowLimit();
+ 
 
   const {
     data,

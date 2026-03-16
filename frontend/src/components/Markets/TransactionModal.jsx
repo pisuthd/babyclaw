@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount, usePublicClient, useWaitForTransactionReceipt } from 'wagmi';
 import { useLendingActions } from '../../hooks/useLendingActions';
 import { useUserMarketData } from '../../hooks/useMarketContract';
 import { useTokenAllowance } from '../../hooks/useTokenAllowance';
@@ -16,6 +16,7 @@ export function TransactionModal({ isOpen, onClose, type, amount, market }) {
   const [mainTxHash, setMainTxHash] = useState(undefined);
   
   const { address } = useAccount();
+  const publicClient = usePublicClient();
   const { supply, borrow, approve, enterMarket } = useLendingActions();
   const { data: userMarketData } = useUserMarketData(
     CTOKEN_ADDRESSES[market.symbol],
@@ -108,22 +109,33 @@ export function TransactionModal({ isOpen, onClose, type, amount, market }) {
         
         // Approve ERC20 token if needed
         if (needsApproval && !isNative) {
+          console.log('Approving token...');
           const approvalResult = await approve(market.symbol, CTOKEN_ADDRESSES[market.symbol], amount);
           if (approvalResult.status === 'failed') {
             throw new Error(approvalResult.error || 'Approval failed');
-          } 
+          }
+          // Wait for approval to confirm
+          console.log('Waiting for approval confirmation...');
+          await publicClient.waitForTransactionReceipt({ hash: approvalResult.hash });
+          console.log('Approval confirmed!');
         }
 
         // Enter market (enable as collateral) if needed
         if (needsMarketEntry) {
+          console.log('Entering market...');
           const entryResult = await enterMarket(market.symbol);
           if (entryResult.status === 'failed') {
             throw new Error(entryResult.error || 'Market entry failed');
-          } 
+          }
+          // Wait for market entry to confirm
+          console.log('Waiting for market entry confirmation...');
+          await publicClient.waitForTransactionReceipt({ hash: entryResult.hash });
+          console.log('Market entry confirmed!');
         }
       }
 
       // Execute main transaction (supply or borrow)
+      console.log('Executing main transaction...');
       const result = type === 'supply'
         ? await supply(market.symbol, amount)
         : await borrow(market.symbol, amount);

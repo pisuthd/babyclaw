@@ -20,8 +20,9 @@ const ERC20_ABI = [
  */
 export function useUserBalance(tokenSymbol) {
   const { address } = useAccount();
+ 
   const tokenConfig = TOKEN_CONFIGS[tokenSymbol];
-
+ 
   // For native CELO, use getBalance
   if (tokenSymbol === 'CELO') {
     const { data: balance, isLoading, error } = useBalance({
@@ -48,6 +49,7 @@ export function useUserBalance(tokenSymbol) {
       staleTime: 30_000, // Cache for 30 seconds
     },
   });
+ 
 
   return {
     data: balance,
