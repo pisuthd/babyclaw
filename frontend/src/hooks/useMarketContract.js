@@ -196,9 +196,21 @@ export function useMarketStats(marketAddress) {
 }
 
 /**
- * Hook to get user's market data (balance, borrow balance)
+ * Hook to get user's market data (balance, borrow balance) using getAccountSnapshot
  */
 export function useUserMarketData(marketAddress, userAddress) {
+  const { data: accountSnapshot, isLoading: snapshotLoading, error: snapshotError } = useReadContract({
+    address: marketAddress,
+    abi: cTokenAbi,
+    functionName: 'getAccountSnapshot',
+    args: userAddress ? [userAddress] : undefined,
+    chainId: CHAIN.id,
+    query: {
+      enabled: !!marketAddress && !!userAddress,
+      staleTime: 30_000,
+    },
+  });
+
   const { data: balanceOf, isLoading: balanceLoading } = useReadContract({
     address: marketAddress,
     abi: cTokenAbi,
@@ -211,30 +223,22 @@ export function useUserMarketData(marketAddress, userAddress) {
     },
   });
 
-  const { data: borrowBalanceStored, isLoading: borrowLoading } = useReadContract({
-    address: marketAddress,
-    abi: cTokenAbi,
-    functionName: 'borrowBalanceStored',
-    args: userAddress ? [userAddress] : undefined,
-    chainId: CHAIN.id,
-    query: {
-      enabled: !!marketAddress && !!userAddress,
-      staleTime: 30_000,
-    },
-  });
+  const isLoading = snapshotLoading || balanceLoading;
 
-  const isLoading = balanceLoading || borrowLoading;
-
-  const data = balanceOf !== undefined && borrowBalanceStored !== undefined
+  // getAccountSnapshot returns: [error, cTokenBalance, borrowBalance, exchangeRateMantissa]
+  const data = accountSnapshot && balanceOf !== undefined
     ? {
         balanceOf: balanceOf,
-        borrowBalanceStored: borrowBalanceStored,
+        cTokenBalance: accountSnapshot[1],
+        borrowBalanceStored: accountSnapshot[2],
+        exchangeRateMantissa: accountSnapshot[3],
       }
     : undefined;
 
   return {
     data,
     isLoading,
+    error: snapshotError,
   };
 }
 

@@ -11,15 +11,15 @@ function Hero({ onNavigate }) {
             {/* Celo Mainnet Badge */}
             <div className="flex justify-center lg:justify-start mb-4">
               <span className="flex items-center gap-2 text-xs md:text-sm text-white font-space">
-                <img 
-                  src={celoIcon} 
-                  alt="Celo" 
+                <img
+                  src={celoIcon}
+                  alt="Celo"
                   className="w-4 h-4"
                 />
                 Live on Celo Mainnet
               </span>
             </div>
-            
+
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent">
               Celo's On-chain Bank<br />Powered by BABY
             </h1>
@@ -47,15 +47,15 @@ function Hero({ onNavigate }) {
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-xs md:text-sm text-text-secondary font-space">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-accent-cyan rounded-full"></span>
-                Battle-tested money market
+                Battle-Tested Money Market
               </span>
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-accent-cyan rounded-full"></span>
-                Pay with X402
+                Agent Payments via x402
               </span>
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-accent-cyan rounded-full"></span>
-                Made for your OpenClaw agent
+                Built for OpenClaw Agents
               </span>
             </div>
           </div>

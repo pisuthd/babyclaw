@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { useLendingActions } from '../../hooks/useLendingActions';
 import { useUserMarketData } from '../../hooks/useMarketContract';
@@ -12,9 +12,7 @@ export function TransactionModal({ isOpen, onClose, type, amount, market }) {
   const [error, setError] = useState(null);
   const [transactionResult, setTransactionResult] = useState(null);
   const [needsApproval, setNeedsApproval] = useState(false);
-  const [needsMarketEntry, setNeedsMarketEntry] = useState(false);
-  // const [approvalTxHash, setApprovalTxHash] = useState(undefined);
-  // const [marketEntryTxHash, setMarketEntryTxHash] = useState(undefined);
+  const [needsMarketEntry, setNeedsMarketEntry] = useState(false); 
   const [mainTxHash, setMainTxHash] = useState(undefined);
   
   const { address } = useAccount();
@@ -62,9 +60,7 @@ export function TransactionModal({ isOpen, onClose, type, amount, market }) {
       setCurrentStep('preview');
       setIsProcessing(false);
       setError(null);
-      setTransactionResult(null);
-      // setApprovalTxHash(undefined);
-      // setMarketEntryTxHash(undefined);
+      setTransactionResult(null); 
       setMainTxHash(undefined);
       checkRequirements();
     }
@@ -115,11 +111,7 @@ export function TransactionModal({ isOpen, onClose, type, amount, market }) {
           const approvalResult = await approve(market.symbol, CTOKEN_ADDRESSES[market.symbol], amount);
           if (approvalResult.status === 'failed') {
             throw new Error(approvalResult.error || 'Approval failed');
-          }
-          // if (approvalResult.hash) {
-          //   setApprovalTxHash(approvalResult.hash);
-          //   console.log('Approval transaction sent, hash:', approvalResult.hash);
-          // }
+          } 
         }
 
         // Enter market (enable as collateral) if needed
@@ -127,11 +119,7 @@ export function TransactionModal({ isOpen, onClose, type, amount, market }) {
           const entryResult = await enterMarket(market.symbol);
           if (entryResult.status === 'failed') {
             throw new Error(entryResult.error || 'Market entry failed');
-          }
-          // if (entryResult.hash) {
-          //   setMarketEntryTxHash(entryResult.hash);
-          //   console.log('Market entry transaction sent, hash:', entryResult.hash);
-          // }
+          } 
         }
       }
 
@@ -167,10 +155,7 @@ export function TransactionModal({ isOpen, onClose, type, amount, market }) {
     if (value < 1000000) return `$${(value / 1000).toFixed(2)}K`;
     return `$${(value / 1000000).toFixed(2)}M`;
   };
-
-  // const formatPercent = (value) => {
-  //   return `${value >= 0 ? '+' : ''}${parseFloat(value).toFixed(2)}%`;
-  // };
+ 
 
   const formatAPY = (apy) => {
     if (apy === null || apy === undefined) return '0.00%';
