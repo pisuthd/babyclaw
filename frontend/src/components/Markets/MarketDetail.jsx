@@ -1,12 +1,21 @@
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
-import { TOKEN_CONFIG, TOKEN_ICONS } from '../../utils/tokenConfig.js';
+import { useUserBalance, formatBalance } from '../../hooks/useUserBalance';
+import { useBorrowLimit, formatUSD } from '../../hooks/useBorrowLimit';
+import { TOKEN_CONFIG } from '../../utils/tokenConfig.js';
+import { TransactionModal } from './TransactionModal';
+import { usePrices } from '../../hooks/usePrices';
 
 export const MarketDetail = ({ market, onBack }) => {
   const [activeTab, setActiveTab] = useState('supply');
   const [amount, setAmount] = useState('');
   const [timeRange, setTimeRange] = useState('1M');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { prices } = usePrices();
+  const { data: userBalance, isLoading: balanceLoading } = useUserBalance(market.symbol);
+  const { borrowLimitUSD, healthFactor, isLoading: borrowLimitLoading } = useBorrowLimit();
 
   const {
     data,
@@ -25,6 +34,11 @@ export const MarketDetail = ({ market, onBack }) => {
   });
 
   const tokenConfig = TOKEN_CONFIG[market.symbol];
+
+  const formatAPY = (apy) => {
+    if (apy === null || apy === undefined) return '0.00%';
+    return `${parseFloat(apy).toFixed(2)}%`;
+  };
 
   const formatPrice = (price) => {
     if (price >= 1) {
@@ -52,11 +66,24 @@ export const MarketDetail = ({ market, onBack }) => {
     return null;
   };
 
+  // Calculate Y-axis domain with padding for better visibility
+  const getYAxisDomain = () => {
+    if (!data || data.length === 0) return [0, 0];
+    
+    const prices = data.map(d => d.price);
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    const range = max - min;
+    const padding = range * 0.1; // 10% padding
+    
+    return [min - padding, max + padding];
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-      {/* Header */}
-      <div className="mb-12">
-        <div className="flex items-center justify-between mb-6">
+      {/* Header Container */}
+      <div className="bg-bg-secondary/30 backdrop-blur-sm border border-border-color rounded-2xl p-8 mb-8 shadow-xl">
+        <div className="flex items-center justify-between mb-8">
           <button
             onClick={onBack}
             className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors group"
@@ -73,48 +100,78 @@ export const MarketDetail = ({ market, onBack }) => {
           </button>
           <div className="flex gap-3">
             <div className="bg-green-500/20 border border-green-500/30 rounded-lg px-4 py-2">
-              <span className="text-green-400 text-sm font-medium">Supply: {market.supplyApy}%</span>
+              <span className="text-green-400 text-sm font-medium">Supply: {formatAPY(market.supplyApy)}</span>
             </div>
             <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg px-4 py-2">
-              <span className="text-blue-400 text-sm font-medium">Borrow: {market.borrowApy}%</span>
+              <span className="text-blue-400 text-sm font-medium">Borrow: {formatAPY(market.borrowApy)}</span>
             </div>
           </div>
         </div>
 
-        {/* Market Title with Icon */}
-        <div className="flex items-center gap-6 mb-6">
+        {/* Enhanced Market Title with Large Icon */}
+        <div className="flex items-center gap-8 mb-8">
           <div className="relative">
-            <img 
-              src={market.icon} 
-              alt={market.symbol} 
-              className="w-20 h-20 rounded-full border-4 border-accent-cyan/20 shadow-lg"
-            />
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-bg-secondary flex items-center justify-center">
-              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
+            {/* Icon Container with Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-accent-cyan to-blue-600 rounded-full blur-xl opacity-30"></div>
+            <div className="relative">
+              <img 
+                src={market.icon} 
+                alt={market.symbol} 
+                className="w-24 h-24 rounded-full border-4 border-accent-cyan/30 shadow-2xl"
+              />
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-gradient-to-r from-accent-cyan to-blue-600 rounded-full border-3 border-bg-secondary flex items-center justify-center shadow-lg">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
             </div>
           </div>
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent mb-2">
-              {market.name}
-            </h1>
-            <p className="text-lg text-text-secondary">{market.symbol} Market Details</p>
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent">
+                {market.name}
+              </h1>
+              <div className="bg-accent-cyan/20 border border-accent-cyan/40 rounded-full px-4 py-1">
+                <span className="text-accent-cyan text-sm font-bold">{market.symbol}</span>
+              </div>
+            </div>
+            <p className="text-xl text-text-secondary font-medium">Lending Market Details</p>
           </div>
         </div>
 
-        {/* Quick Stats */}
+        {/* Enhanced Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-bg-secondary/50 backdrop-blur-sm rounded-xl border border-border-color p-5 hover:border-accent-cyan/50 transition-all">
-            <p className="text-text-secondary text-sm font-medium mb-2">Total Supply</p>
+          <div className="bg-bg-primary/50 backdrop-blur-sm rounded-xl border border-border-color p-6 hover:border-accent-cyan/50 transition-all group">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <p className="text-text-secondary text-sm font-medium">Total Supply</p>
+            </div>
             <p className="text-2xl font-bold text-text-primary">{market.totalSupply}</p>
           </div>
-          <div className="bg-bg-secondary/50 backdrop-blur-sm rounded-xl border border-border-color p-5 hover:border-accent-cyan/50 transition-all">
-            <p className="text-text-secondary text-sm font-medium mb-2">Total Borrowed</p>
+          <div className="bg-bg-primary/50 backdrop-blur-sm rounded-xl border border-border-color p-6 hover:border-accent-cyan/50 transition-all group">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                </svg>
+              </div>
+              <p className="text-text-secondary text-sm font-medium">Total Borrowed</p>
+            </div>
             <p className="text-2xl font-bold text-text-primary">{market.totalBorrow}</p>
           </div>
-          <div className="bg-bg-secondary/50 backdrop-blur-sm rounded-xl border border-border-color p-5 hover:border-accent-cyan/50 transition-all">
-            <p className="text-text-secondary text-sm font-medium mb-2">Symbol</p>
+          <div className="bg-bg-primary/50 backdrop-blur-sm rounded-xl border border-border-color p-6 hover:border-accent-cyan/50 transition-all group">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p className="text-text-secondary text-sm font-medium">Market Symbol</p>
+            </div>
             <p className="text-2xl font-bold text-accent-cyan">{market.symbol}</p>
           </div>
         </div>
@@ -179,24 +236,47 @@ export const MarketDetail = ({ market, onBack }) => {
           {/* Balance */}
           <div className="flex justify-between items-center mb-6 text-sm">
             <span className="text-gray-400">
-              {activeTab === 'supply' ? 'Wallet Balance' : 'Borrow Limit'}: 0.00 {market.symbol}
+              {activeTab === 'supply' ? 'Wallet Balance' : 'Borrow Limit'}:{' '}
+              {activeTab === 'supply' ? (
+                balanceLoading ? (
+                  'Loading...'
+                ) : (
+                  `${formatBalance(userBalance, tokenConfig?.decimals || 18)} ${market.symbol}`
+                )
+              ) : borrowLimitLoading ? (
+                'Loading...'
+              ) : (
+                formatUSD(borrowLimitUSD)
+              )}
             </span>
+            {activeTab === 'supply' && !balanceLoading && (
+              <button
+                onClick={() => setAmount(formatBalance(userBalance, tokenConfig?.decimals || 18))}
+                className="text-blue-400 hover:text-blue-300 text-xs"
+              >
+                Set MAX
+              </button>
+            )}
           </div>
 
           {/* APY Info */}
           <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-lg p-4 mb-6">
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Supply APY</span>
-              <span className="text-green-400 font-semibold">{market.supplyApy}%</span>
+              <span className="text-green-400 font-semibold">{formatAPY(market.supplyApy)}</span>
             </div>
             <div className="flex justify-between items-center mt-2">
               <span className="text-gray-400">Borrow APY</span>
-              <span className="text-blue-400 font-semibold">{market.borrowApy}%</span>
+              <span className="text-blue-400 font-semibold">{formatAPY(market.borrowApy)}</span>
             </div>
           </div>
 
           {/* Action Button */}
-          <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            disabled={!amount || parseFloat(amount) <= 0}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {activeTab === 'supply' ? 'Preview Supply' : 'Preview Borrow'}
           </button>
         </div>
@@ -284,6 +364,8 @@ export const MarketDetail = ({ market, onBack }) => {
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(value) => formatPrice(value)}
+                    domain={getYAxisDomain()}
+                    allowDataOverflow={true}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Line
@@ -312,6 +394,18 @@ export const MarketDetail = ({ market, onBack }) => {
           </div>
         </div>
       </div>
+
+      {/* Transaction Modal */}
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        type={activeTab}
+        amount={amount}
+        market={{
+          ...market,
+          price: prices[market.symbol] || 1,
+        }}
+      />
     </div>
   );
 };

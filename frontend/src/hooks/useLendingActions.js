@@ -11,7 +11,7 @@ import { COMPTROLLER_ADDRESS, CTOKEN_ADDRESSES, TOKEN_CONFIGS } from '../contrac
  * Provides supply, withdraw, borrow, repay, and market management functions
  */
 export function useLendingActions() {
-  const { data: hash, mutateAsync: writeContract, isPending, error } = useWriteContract();
+  const { data: hash, writeContractAsync, isPending, error } = useWriteContract();
 
   /**
    * Supply tokens to a market
@@ -23,7 +23,7 @@ export function useLendingActions() {
       try {
         const marketAddress = CTOKEN_ADDRESSES[symbol];
         const tokenConfig = TOKEN_CONFIGS[symbol];
-        
+
         if (!marketAddress) {
           throw new Error(`Market not found for ${symbol}`);
         }
@@ -32,9 +32,15 @@ export function useLendingActions() {
         const decimals = tokenConfig?.decimals || 18;
         const amountWei = parseUnits(amount, decimals);
 
-        const txHash = await writeContract({
+        const txHash = await writeContractAsync({
           address: marketAddress,
-          abi: cTokenAbi,
+          abi: isNative ? [{
+            "inputs": [],
+            "name": "mint",
+            "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+            "stateMutability": "payable",
+            "type": "function"
+          }] : cTokenAbi,
           functionName: 'mint',
           args: isNative ? undefined : [amountWei],
           value: isNative ? amountWei : undefined,
@@ -52,7 +58,7 @@ export function useLendingActions() {
         };
       }
     },
-    [writeContract]
+    [writeContractAsync]
   );
 
   /**
@@ -65,7 +71,7 @@ export function useLendingActions() {
       try {
         const marketAddress = CTOKEN_ADDRESSES[symbol];
         const tokenConfig = TOKEN_CONFIGS[symbol];
-        
+
         if (!marketAddress) {
           throw new Error(`Market not found for ${symbol}`);
         }
@@ -73,7 +79,7 @@ export function useLendingActions() {
         const decimals = tokenConfig?.decimals || 18;
         const amountWei = parseUnits(amount, decimals);
 
-        const txHash = await writeContract({
+        const txHash = await writeContractAsync({
           address: marketAddress,
           abi: cTokenAbi,
           functionName: 'redeemUnderlying',
@@ -92,7 +98,7 @@ export function useLendingActions() {
         };
       }
     },
-    [writeContract]
+    [writeContractAsync]
   );
 
   /**
@@ -105,7 +111,7 @@ export function useLendingActions() {
       try {
         const marketAddress = CTOKEN_ADDRESSES[symbol];
         const tokenConfig = TOKEN_CONFIGS[symbol];
-        
+
         if (!marketAddress) {
           throw new Error(`Market not found for ${symbol}`);
         }
@@ -113,7 +119,7 @@ export function useLendingActions() {
         const decimals = tokenConfig?.decimals || 18;
         const amountWei = parseUnits(amount, decimals);
 
-        const txHash = await writeContract({
+        const txHash = await writeContractAsync({
           address: marketAddress,
           abi: cTokenAbi,
           functionName: 'borrow',
@@ -132,7 +138,7 @@ export function useLendingActions() {
         };
       }
     },
-    [writeContract]
+    [writeContractAsync]
   );
 
   /**
@@ -145,7 +151,7 @@ export function useLendingActions() {
       try {
         const marketAddress = CTOKEN_ADDRESSES[symbol];
         const tokenConfig = TOKEN_CONFIGS[symbol];
-        
+
         if (!marketAddress) {
           throw new Error(`Market not found for ${symbol}`);
         }
@@ -154,9 +160,15 @@ export function useLendingActions() {
         const decimals = tokenConfig?.decimals || 18;
         const amountWei = parseUnits(amount, decimals);
 
-        const txHash = await writeContract({
+        const txHash = await writeContractAsync({
           address: marketAddress,
-          abi: cTokenAbi,
+          abi: isNative ? [{
+            "inputs": [],
+            "name": "repayBorrow",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+          }] : cTokenAbi,
           functionName: 'repayBorrow',
           args: isNative ? undefined : [amountWei],
           value: isNative ? amountWei : undefined,
@@ -174,7 +186,7 @@ export function useLendingActions() {
         };
       }
     },
-    [writeContract]
+    [writeContractAsync]
   );
 
   /**
@@ -187,7 +199,7 @@ export function useLendingActions() {
     async (symbol, spender, amount) => {
       try {
         const tokenConfig = TOKEN_CONFIGS[symbol];
-        
+
         if (!tokenConfig?.address || symbol === 'CELO') {
           throw new Error(`Token not found or is native token`);
         }
@@ -195,7 +207,7 @@ export function useLendingActions() {
         const decimals = tokenConfig.decimals || 18;
         const amountWei = parseUnits(amount, decimals);
 
-        const txHash = await writeContract({
+        const txHash = await writeContractAsync({
           address: tokenConfig.address,
           abi: erc20Abi,
           functionName: 'approve',
@@ -214,7 +226,7 @@ export function useLendingActions() {
         };
       }
     },
-    [writeContract]
+    [writeContractAsync]
   );
 
   /**
@@ -225,12 +237,12 @@ export function useLendingActions() {
     async (symbol) => {
       try {
         const marketAddress = CTOKEN_ADDRESSES[symbol];
-        
+
         if (!marketAddress) {
           throw new Error(`Market not found for ${symbol}`);
         }
 
-        const txHash = await writeContract({
+        const txHash = await writeContractAsync({
           address: COMPTROLLER_ADDRESS,
           abi: comptrollerAbi,
           functionName: 'enterMarkets',
@@ -249,7 +261,7 @@ export function useLendingActions() {
         };
       }
     },
-    [writeContract]
+    [writeContractAsync]
   );
 
   /**
@@ -260,12 +272,12 @@ export function useLendingActions() {
     async (symbol) => {
       try {
         const marketAddress = CTOKEN_ADDRESSES[symbol];
-        
+
         if (!marketAddress) {
           throw new Error(`Market not found for ${symbol}`);
         }
 
-        const txHash = await writeContract({
+        const txHash = await writeContractAsync({
           address: COMPTROLLER_ADDRESS,
           abi: comptrollerAbi,
           functionName: 'exitMarket',
@@ -284,7 +296,7 @@ export function useLendingActions() {
         };
       }
     },
-    [writeContract]
+    [writeContractAsync]
   );
 
   return {

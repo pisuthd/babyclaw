@@ -155,7 +155,7 @@ function Markets() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
             </div>
-            <span className="text-text-secondary text-sm font-medium">Total Liquidity</span>
+            <span className="text-text-secondary text-sm font-medium">Total Value Locked</span>
           </div>
           <p className="text-2xl md:text-3xl font-bold text-text-primary">
             {formatLargeCurrency(stats.totalLiquidity)}
