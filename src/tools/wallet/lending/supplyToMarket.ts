@@ -112,25 +112,16 @@ export const supplyToMarketTool = tool({
       }
 
       // Supply tokens to market using mint function on cToken
-      let txHash: `0x${string}`
-      if (tokenSymbol === 'CELO') {
-        txHash = await walletClient.writeContract({
-          address: cTokenAddress,
-          abi: CTOKEN_ABI,
-          functionName: 'mint',
-          args: [amountWei],
-          value: amountWei,
-          chain: celo,
-        } as any)
-      } else {
-        txHash = await walletClient.writeContract({
-          address: cTokenAddress,
-          abi: CTOKEN_ABI,
-          functionName: 'mint',
-          args: [amountWei],
-          chain: celo,
-        } as any)
-      }
+      // For native CELO, mint() takes no args and uses msg.value
+      // For ERC20 tokens, mint() takes the amount as an argument
+      const txHash = await walletClient.writeContract({
+        address: cTokenAddress,
+        abi: CTOKEN_ABI,
+        functionName: 'mint',
+        args: tokenSymbol === 'CELO' ? undefined : [amountWei],
+        value: tokenSymbol === 'CELO' ? amountWei : undefined,
+        chain: celo,
+      } as any)
 
       const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash })
 

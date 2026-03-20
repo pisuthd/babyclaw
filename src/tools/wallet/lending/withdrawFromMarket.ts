@@ -40,14 +40,22 @@ export const withdrawFromMarketTool = tool({
       const decimals = TOKEN_CONFIGS[tokenSymbol as keyof typeof TOKEN_CONFIGS]?.decimals ?? 18
       const amountWei = parseUnits(amount, decimals)
 
-      // Get cToken balance
+      // Get cToken balance and decimals
       const cTokenBalance = await publicClient.readContract({
         address: cTokenAddress,
         abi: CTOKEN_ABI,
         functionName: 'balanceOf',
         args: [walletAddress],
         chain: celo,
-      } as any)
+      } as any) as bigint
+
+      const cTokenDecimals = await publicClient.readContract({
+        address: cTokenAddress,
+        abi: CTOKEN_ABI,
+        functionName: 'decimals',
+        args: [],
+        chain: celo,
+      } as any) as number
 
       if (cTokenBalance === 0n) {
         throw new Error(`No supplied ${tokenSymbol} in the market`)
@@ -60,16 +68,29 @@ export const withdrawFromMarketTool = tool({
         functionName: 'exchangeRateStored',
         args: [],
         chain: celo,
-      } as any)
+      } as any) as bigint
 
-      const exchangeRate = Number(exchangeRateStored) / 1e18
-      const maxUnderlying = Number(cTokenBalance) * exchangeRate / Math.pow(10, 18 - 8) // cTokens have 8 decimals
-      const maxWithdrawableFormatted = maxUnderlying / Math.pow(10, decimals)
-      const requestedAmount = Number(amount)
+      // Calculate max withdrawable using proper decimal handling
+      // Formula: (cTokenBalance * exchangeRate) / (10^(18 + underlyingDecimals - cTokenDecimals))
+      const cTokenDecimalsBig = 10n ** BigInt(cTokenDecimals)
+      const underlyingDecimalsBig = 10n ** BigInt(decimals)
+      const exchangeRateBase = 10n ** 18n
+      
+      // Max underlying = (cTokenBalance * exchangeRate) / (10^18) * (10^cTokenDecimals / 10^underlyingDecimals)
+      // Break down into steps for clarity and type safety
+      const product = cTokenBalance * exchangeRateStored
+      const scaledByExchangeRate = product / exchangeRateBase
+      const scaledByCTokenDecimals = scaledByExchangeRate * cTokenDecimalsBig
+      const maxUnderlyingWei = scaledByCTokenDecimals / underlyingDecimalsBig
+      const maxWithdrawableFormatted = formatUnits(maxUnderlyingWei, decimals)
+      const maxWithdrawableWei = parseUnits(maxWithdrawableFormatted, decimals)
+      const requestedAmountWei = amountWei
+      const requestedAmountNumber = Number(amount)
 
-      if (maxWithdrawableFormatted < requestedAmount) {
+      // Compare as numbers to avoid precision issues
+      if (Number(maxWithdrawableFormatted) < requestedAmountNumber) {
         throw new Error(
-          `Insufficient supplied tokens. Maximum withdrawable: ${maxWithdrawableFormatted.toFixed(6)} ${tokenSymbol}, Requested: ${amount} ${tokenSymbol}`
+          `Insufficient supplied tokens. Maximum withdrawable: ${Number(maxWithdrawableFormatted).toFixed(6)} ${tokenSymbol}, Requested: ${amount} ${tokenSymbol}`
         )
       }
 

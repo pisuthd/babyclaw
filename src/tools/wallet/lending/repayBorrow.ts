@@ -130,25 +130,16 @@ export const repayBorrowTool = tool({
       }
 
       // Repay borrowed tokens
-      let txHash: `0x${string}`
-      if (tokenSymbol === 'CELO') {
-        txHash = await walletClient.writeContract({
-          address: cTokenAddress,
-          abi: CTOKEN_ABI,
-          functionName: 'repayBorrow',
-          args: [amountWei],
-          value: amountWei,
-          chain: celo,
-        } as any)
-      } else {
-        txHash = await walletClient.writeContract({
-          address: cTokenAddress,
-          abi: CTOKEN_ABI,
-          functionName: 'repayBorrow',
-          args: [amountWei],
-          chain: celo,
-        } as any)
-      }
+      // For native CELO, repayBorrow() takes no args and uses msg.value
+      // For ERC20 tokens, repayBorrow() takes the amount as an argument
+      const txHash = await walletClient.writeContract({
+        address: cTokenAddress,
+        abi: CTOKEN_ABI,
+        functionName: 'repayBorrow',
+        args: tokenSymbol === 'CELO' ? undefined : [amountWei],
+        value: tokenSymbol === 'CELO' ? amountWei : undefined,
+        chain: celo,
+      } as any)
 
       await publicClient.waitForTransactionReceipt({ hash: txHash })
 
