@@ -254,6 +254,12 @@ Error Handling:
             native_currency: 'CELO'
           },
           markets,
+          summary: {
+            total_markets: totalMarkets,
+            avg_supply_apy: avgSupplyApy,
+            avg_borrow_apy: avgBorrowApy,
+            total_tvl_usd: totalTVL.toFixed(2)
+          },
           recommendations: [
             'Compare supply and borrow rates across markets',
             'Check utilization rates - high utilization (>80%) may indicate increasing rates',
