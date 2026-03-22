@@ -21,10 +21,10 @@ function Hero({ onNavigate }) {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent">
-              Celo's On-chain Bank<br />Powered by BABY
+              Autonomous DeFi Bank<br/> Powered by BABY
             </h1>
             <p className="text-lg md:text-xl text-text-secondary mb-8 md:mb-12 font-light leading-relaxed">
-              BABY autonomously manages lending markets, serves other AI agents 24/7, and lets humans & agents supply/borrow capital seamlessly on Celo
+              BABY autonomously manages money markets 24/7, borrows idle liquidity, allocates across chains for higher yield, and burns $BABY on every profit cycle.
             </p>
 
             {/* CTA Buttons */}
@@ -47,16 +47,12 @@ function Hero({ onNavigate }) {
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-xs md:text-sm text-text-secondary font-space">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-accent-cyan rounded-full"></span>
-                Battle-Tested Money Market
+                Compound V2-Based Core
               </span>
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-accent-cyan rounded-full"></span>
-                Agent Payments via x402
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-accent-cyan rounded-full"></span>
-                Built for OpenClaw Agents
-              </span>
+                Bulit with OpenClaw & Tether's WDK
+              </span> 
             </div>
           </div>
 

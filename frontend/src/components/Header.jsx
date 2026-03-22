@@ -1,26 +1,27 @@
 import { useState } from 'react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from '@rainbow-me/rainbowkit'; 
+
 
 function Header({ onNavigate }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navItems = [
-    { label: 'Lounge', path: '/lounge' },
+  const navItems = [ 
     { label: 'Markets', path: '/markets' },
-    // { label: '$BABY', path: '/baby' },
+    { label: 'BABY', path: '/activity' },
     { label: 'Portfolio', path: '/portfolio' },
   ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-bg-primary/90 backdrop-blur-md border-b border-border-color px-4 py-4 md:px-8 md:py-5">
       <nav className="max-w-7xl mx-auto flex items-center justify-between">
-        <a 
-          href="#/" 
+        <a
+          href="#/"
           onClick={(e) => {
             e.preventDefault();
             onNavigate('/');
           }}
-          className="text-2xl font-bold bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent"
+          className="text-xl md:text-2xl font-bold bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+          style={{ fontFamily: '"Orbitron", sans-serif' }}
         >
           BabyClaw
         </a>
@@ -41,7 +42,7 @@ function Header({ onNavigate }) {
         {/* Connect Button */}
         <div className="flex items-center">
           <ConnectButton />
-          
+
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

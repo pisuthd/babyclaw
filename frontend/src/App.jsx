@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { Home } from './pages/Home';
-import { Lounge } from './pages/Lounge';
+import { Home } from './pages/Home'; 
 import { Markets } from './pages/Markets';
 import { Baby } from './pages/Baby';
 import { Portfolio } from './pages/Portfolio';
@@ -11,8 +10,7 @@ import { usePrices } from './hooks/usePrices';
 import { useMarkets } from './hooks/useMarketsStore';
 
 const currentPageToComponent = {
-  '/': Home,
-  '/lounge': Lounge,
+  '/': Home, 
   '/markets': Markets,
   '/baby': Baby,
   '/portfolio': Portfolio
@@ -52,7 +50,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-bg-primary to-[#1a1f3a] font-inter text-text-primary">
-      <Header onNavigate={handleNavigate} />
+      <Header onNavigate={handleNavigate} currentPage={currentPage} />
       <main className="flex-1 pt-16 md:pt-24">
         <CurrentPageComponent onNavigate={handleNavigate} />
       </main>

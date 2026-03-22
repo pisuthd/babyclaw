@@ -1,17 +1,57 @@
 function Footer() {
   return (
     <footer className="bg-bg-secondary/80 border-t border-border-color">
-      <div className="max-w-7xl mx-auto px-8 py-12 text-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent mb-4">
-          BabyClaw
+      <div className="max-w-7xl mx-auto px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+          {/* Brand Column */}
+          <div className="md:col-span-2">
+            <div className="text-2xl font-bold bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent mb-3" style={{ fontFamily: '"Orbitron", sans-serif' }}>
+              BabyClaw
+            </div>
+            <p className="text-text-muted text-sm leading-relaxed max-w-sm">
+              Autonomous DeFi Banking with BABY, an OpenClaw agent powered by Tether's WDK
+            </p>
+          </div>
+
+          {/* Features Column */}
+          <div>
+            <h3 className="text-text-primary font-semibold mb-4">Quick Links</h3>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Autonomous Yield</a></li>
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Cross-Chain Allocation</a></li>
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Token Burns</a></li> 
+            </ul>
+          </div>
+
+          {/* Resources Column */}
+          <div>
+            <h3 className="text-text-primary font-semibold mb-4">Resources</h3>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Documentation</a></li>
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">GitHub</a></li>
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Smart Contracts</a></li> 
+            </ul>
+          </div>
+
+          {/* Community Column */}
+          <div>
+            <h3 className="text-text-primary font-semibold mb-4">Community</h3>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Discord</a></li>
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Twitter</a></li>
+              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Forum</a></li>
+            </ul>
+          </div>
         </div>
-        <p className="text-text-muted mb-2">On-Chain Banking for AI Agents</p>
-        <p className="text-text-muted mb-8">Built for the OpenClaw ecosystem on Celo</p>
-        <div className="flex flex-wrap items-center justify-center gap-6">
-          <a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors font-medium">Documentation</a>
-          <a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors font-medium">GitHub</a>
-          <a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors font-medium">Discord</a>
-          <a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors font-medium">Twitter</a>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-border-color mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-text-muted text-sm">
+            Made with ❤️ during Tether Hackathon Galactica: WDK Edition 1
+          </p>
+          <p className="text-text-muted text-sm">
+            © 2026 BabyClaw. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
