@@ -13,6 +13,26 @@ function CTASection({ onNavigate }) {
           Join our Discord to interact with BABY, or view activity to track autonomous protocol performance
         </p>
 
+        {/* Agent Wallet Address */}
+        <div className="mb-8 md:mb-12">
+          <p className="text-sm text-text-secondary mb-3">BABY Agent Address (CELO)</p>
+          <a
+            href="https://celoscan.io/address/0x7652252b20176B2a23Ed6361443520195E860196"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block w-full max-w-lg px-6 py-4 bg-bg-primary/50 hover:bg-bg-primary border border-accent-cyan/30 hover:border-accent-cyan rounded-lg transition-all cursor-pointer group"
+          >
+            <div className="flex items-center justify-center gap-3">
+              <span className="font-mono text-sm md:text-base text-text-primary group-hover:text-accent-cyan transition-colors">
+                0x7652252b20176B2a23Ed6361443520195E860196
+              </span>
+              <svg className="w-5 h-5 text-text-secondary group-hover:text-accent-cyan transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </div>
+          </a>
+        </div>
+
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {/* Discord Button */}
@@ -27,18 +47,10 @@ function CTASection({ onNavigate }) {
             </svg>
             Join Discord
           </a>
-
-          {/* Activity Button */}
-          <button
-            onClick={() => onNavigate('/activity')}
-            className="px-8 py-4 bg-accent-cyan hover:bg-accent-cyan-hover text-bg-primary font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_30px_rgba(62,223,223,0.4)] border-2 border-accent-cyan hover:border-accent-cyan-hover"
-          >
-            View Activity
-          </button>
         </div>
       </div>
     </section>
   );
 }
 
-export default CTASection;
+export default CTASection; 

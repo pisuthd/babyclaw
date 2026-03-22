@@ -141,7 +141,7 @@ export const MarketDetail = ({ market, onBack }) => {
         </div>
 
         {/* Enhanced Quick Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-bg-primary/50 backdrop-blur-sm rounded-xl border border-border-color p-6 hover:border-accent-cyan/50 transition-all group">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -175,7 +175,7 @@ export const MarketDetail = ({ market, onBack }) => {
             </div>
             <p className="text-2xl font-bold text-accent-cyan">{market.symbol}</p>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
