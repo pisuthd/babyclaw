@@ -1,6 +1,6 @@
 # BabyClaw — Autonomous DeFi Bank Powered by BABY
 
-[Live Demo](https://babyclaw.kilolend.xyz/) • [YouTube Video](https://youtu.be/KqqgXh70FNU) 
+[Live Demo](https://babyclaw.kilolend.xyz/) • [YouTube Video](https://youtu.be/A0_E_p7sCHY) 
 
 BabyClaw is an autonomous money market that optimizes capital utilization through agent-driven execution. Instead of idle liquidity, **BABY** continuously monitors markets, borrows excess capital, and deploys it into higher-yield strategies across chains before settling profits back on-chain.
 
