@@ -21,6 +21,7 @@ import { quoteBorrow } from './quoteBorrow.js'
 import { borrow } from './borrow.js'
 import { quoteRepay } from './quoteRepay.js'
 import { repay } from './repay.js'
+import { getLendingPosition } from './getLendingPosition.js'
 
 /** @typedef {import('../../server.js').ToolFunction} ToolFunction */
 
@@ -34,7 +35,8 @@ export const LENDING_READ_TOOLS = [
   quoteSupply,
   quoteWithdraw,
   quoteBorrow,
-  quoteRepay
+  quoteRepay,
+  getLendingPosition
 ]
 
 /**
@@ -61,4 +63,4 @@ export const LENDING_TOOLS = [
   ...LENDING_WRITE_TOOLS
 ]
 
-export { quoteSupply, supply, quoteWithdraw, withdraw, quoteBorrow, borrow, quoteRepay, repay }
+export { quoteSupply, supply, quoteWithdraw, withdraw, quoteBorrow, borrow, quoteRepay, repay, getLendingPosition }

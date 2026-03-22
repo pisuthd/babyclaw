@@ -24,6 +24,7 @@ import { sendTransaction } from './sendTransaction.js'
 import { transfer } from './transfer.js'
 import { sign } from './sign.js'
 import { verify } from './verify.js'
+import { approve } from './approve.js'
 
 /** @typedef {import('../../server.js').ToolFunction} ToolFunction */
 
@@ -53,7 +54,8 @@ export const WALLET_WRITE_TOOLS = [
   sendTransaction,
   transfer,
   sign,
-  verify
+  verify,
+  approve
 ]
 
 /**
@@ -78,5 +80,6 @@ export {
   sendTransaction,
   transfer,
   sign,
-  verify
+  verify,
+  approve
 }

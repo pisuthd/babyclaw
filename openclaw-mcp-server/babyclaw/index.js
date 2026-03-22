@@ -29,20 +29,23 @@ async function main() {
     .registerWallet('ethereum', WalletManagerEvm, {
       provider: 'https://rpc.mevblocker.io/fast'
     })
-    .registerWallet('arbitrum', WalletManagerEvm, {
-      provider: 'https://arb1.arbitrum.io/rpc'
-    })
     .registerWallet('celo', WalletManagerEvm, {
       provider: 'https://celo.drpc.org'
     })
     .registerProtocol('ethereum', 'usdt0', Usdt0ProtocolEvm)
-    .registerProtocol('arbitrum', 'usdt0', Usdt0ProtocolEvm)
     .registerProtocol('celo', 'usdt0', Usdt0ProtocolEvm)
     .registerProtocol('ethereum', 'aave', AaveProtocolEvm)
-    .registerProtocol('arbitrum', 'aave', AaveProtocolEvm)
     .registerProtocol('celo', 'aave', AaveProtocolEvm)
     .registerToken('celo', 'USDT', {
       address: '0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e',
+      decimals: 6
+    })
+    .registerToken('ethereum', 'USDT', {
+      address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+      decimals: 6
+    })
+    .registerToken('ethereum', 'aUSDT', {
+      address: '0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a',
       decimals: 6
     })
     .registerToken('celo', 'BABY', {
