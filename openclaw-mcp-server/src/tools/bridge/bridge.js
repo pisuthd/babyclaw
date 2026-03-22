@@ -135,46 +135,46 @@ Error Handling:
           recipient: recipientAddress
         }
 
-        const quote = await bridgeProtocol.quoteBridge(options)
+//         const quote = await bridgeProtocol.quoteBridge(options)
 
-        const totalFee = BigInt(quote.fee) + BigInt(quote.bridgeFee)
+//         const totalFee = BigInt(quote.fee) + BigInt(quote.bridgeFee)
 
-        const confirmationMessage = `⚠️  BRIDGE CONFIRMATION REQUIRED
+//         const confirmationMessage = `⚠️  BRIDGE CONFIRMATION REQUIRED
 
-Protocol: ${label}
-From: ${chain}
-To: ${targetChain}
-Token: ${token}
-Amount: ${amount}
-Recipient: ${recipientAddress}
-Gas Fee: ${quote.fee.toString()}
-Bridge Fee: ${quote.bridgeFee.toString()}
-Total Fee: ${totalFee.toString()}
+// Protocol: ${label}
+// From: ${chain}
+// To: ${targetChain}
+// Token: ${token}
+// Amount: ${amount}
+// Recipient: ${recipientAddress}
+// Gas Fee: ${quote.fee.toString()}
+// Bridge Fee: ${quote.bridgeFee.toString()}
+// Total Fee: ${totalFee.toString()}
 
-This bridge is IRREVERSIBLE once broadcast. Tokens will arrive on ${targetChain} after confirmation (may take minutes to hours).
+// This bridge is IRREVERSIBLE once broadcast. Tokens will arrive on ${targetChain} after confirmation (may take minutes to hours).
 
-Do you want to proceed with this bridge?`
+// Do you want to proceed with this bridge?`
 
-        const confirmation = await server.server.elicitInput({
-          message: confirmationMessage,
-          requestedSchema: {
-            type: 'object',
-            properties: {
-              confirmed: {
-                type: 'boolean',
-                title: 'Confirm Bridge',
-                description: 'Check to confirm and execute bridge'
-              }
-            },
-            required: ['confirmed']
-          }
-        })
+//         const confirmation = await server.server.elicitInput({
+//           message: confirmationMessage,
+//           requestedSchema: {
+//             type: 'object',
+//             properties: {
+//               confirmed: {
+//                 type: 'boolean',
+//                 title: 'Confirm Bridge',
+//                 description: 'Check to confirm and execute bridge'
+//               }
+//             },
+//             required: ['confirmed']
+//           }
+//         })
 
-        if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
-          return {
-            content: [{ type: 'text', text: 'Bridge cancelled by user. No funds were spent.' }]
-          }
-        }
+//         if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
+//           return {
+//             content: [{ type: 'text', text: 'Bridge cancelled by user. No funds were spent.' }]
+//           }
+//         }
 
         const bridgeResult = await bridgeProtocol.bridge(options)
 

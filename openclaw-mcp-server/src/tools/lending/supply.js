@@ -127,41 +127,41 @@ Error Handling:
           onBehalfOf: onBehalfOfAddress
         }
 
-        const quote = await lendingProtocol.quoteSupply(options)
+//         const quote = await lendingProtocol.quoteSupply(options)
 
-        const confirmationMessage = `⚠️  SUPPLY CONFIRMATION REQUIRED
+//         const confirmationMessage = `⚠️  SUPPLY CONFIRMATION REQUIRED
 
-Protocol: ${label}
-Chain: ${chain}
-Token: ${token}
-Amount: ${amount}
-Recipient (aTokens): ${onBehalfOfAddress}
-Estimated Fee: ${quote.fee.toString()}
+// Protocol: ${label}
+// Chain: ${chain}
+// Token: ${token}
+// Amount: ${amount}
+// Recipient (aTokens): ${onBehalfOfAddress}
+// Estimated Fee: ${quote.fee.toString()}
 
-You will receive aTokens representing your deposit. This transaction is IRREVERSIBLE once broadcast.
+// You will receive aTokens representing your deposit. This transaction is IRREVERSIBLE once broadcast.
 
-Do you want to proceed with this supply?`
+// Do you want to proceed with this supply?`
 
-        const confirmation = await server.server.elicitInput({
-          message: confirmationMessage,
-          requestedSchema: {
-            type: 'object',
-            properties: {
-              confirmed: {
-                type: 'boolean',
-                title: 'Confirm Supply',
-                description: 'Check to confirm and execute supply'
-              }
-            },
-            required: ['confirmed']
-          }
-        })
+//         const confirmation = await server.server.elicitInput({
+//           message: confirmationMessage,
+//           requestedSchema: {
+//             type: 'object',
+//             properties: {
+//               confirmed: {
+//                 type: 'boolean',
+//                 title: 'Confirm Supply',
+//                 description: 'Check to confirm and execute supply'
+//               }
+//             },
+//             required: ['confirmed']
+//           }
+//         })
 
-        if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
-          return {
-            content: [{ type: 'text', text: 'Supply cancelled by user. No funds were spent.' }]
-          }
-        }
+//         if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
+//           return {
+//             content: [{ type: 'text', text: 'Supply cancelled by user. No funds were spent.' }]
+//           }
+//         }
 
         const supplyResult = await lendingProtocol.supply(options)
 

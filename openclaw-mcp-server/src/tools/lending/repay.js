@@ -127,41 +127,41 @@ Error Handling:
           onBehalfOf: onBehalfOfAddress
         }
 
-        const quote = await lendingProtocol.quoteRepay(options)
+//         const quote = await lendingProtocol.quoteRepay(options)
 
-        const confirmationMessage = `⚠️  REPAY CONFIRMATION REQUIRED
+//         const confirmationMessage = `⚠️  REPAY CONFIRMATION REQUIRED
 
-Protocol: ${label}
-Chain: ${chain}
-Token: ${token}
-Amount: ${amount}
-Repaying for: ${onBehalfOfAddress}
-Estimated Fee: ${quote.fee.toString()}
+// Protocol: ${label}
+// Chain: ${chain}
+// Token: ${token}
+// Amount: ${amount}
+// Repaying for: ${onBehalfOfAddress}
+// Estimated Fee: ${quote.fee.toString()}
 
-This will reduce your debt and improve your health factor. This transaction is IRREVERSIBLE once broadcast.
+// This will reduce your debt and improve your health factor. This transaction is IRREVERSIBLE once broadcast.
 
-Do you want to proceed with this repayment?`
+// Do you want to proceed with this repayment?`
 
-        const confirmation = await server.server.elicitInput({
-          message: confirmationMessage,
-          requestedSchema: {
-            type: 'object',
-            properties: {
-              confirmed: {
-                type: 'boolean',
-                title: 'Confirm Repay',
-                description: 'Check to confirm and execute repayment'
-              }
-            },
-            required: ['confirmed']
-          }
-        })
+//         const confirmation = await server.server.elicitInput({
+//           message: confirmationMessage,
+//           requestedSchema: {
+//             type: 'object',
+//             properties: {
+//               confirmed: {
+//                 type: 'boolean',
+//                 title: 'Confirm Repay',
+//                 description: 'Check to confirm and execute repayment'
+//               }
+//             },
+//             required: ['confirmed']
+//           }
+//         })
 
-        if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
-          return {
-            content: [{ type: 'text', text: 'Repay cancelled by user. No funds were spent.' }]
-          }
-        }
+//         if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
+//           return {
+//             content: [{ type: 'text', text: 'Repay cancelled by user. No funds were spent.' }]
+//           }
+//         }
 
         const repayResult = await lendingProtocol.repay(options)
 

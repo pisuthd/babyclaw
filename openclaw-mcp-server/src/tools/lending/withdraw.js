@@ -126,41 +126,41 @@ Error Handling:
           to: toAddress
         }
 
-        const quote = await lendingProtocol.quoteWithdraw(options)
+//         const quote = await lendingProtocol.quoteWithdraw(options)
 
-        const confirmationMessage = `⚠️  WITHDRAW CONFIRMATION REQUIRED
+//         const confirmationMessage = `⚠️  WITHDRAW CONFIRMATION REQUIRED
 
-Protocol: ${label}
-Chain: ${chain}
-Token: ${token}
-Amount: ${amount}
-Recipient: ${toAddress}
-Estimated Fee: ${quote.fee.toString()}
+// Protocol: ${label}
+// Chain: ${chain}
+// Token: ${token}
+// Amount: ${amount}
+// Recipient: ${toAddress}
+// Estimated Fee: ${quote.fee.toString()}
 
-Your aTokens will be burned in exchange for the underlying tokens. This transaction is IRREVERSIBLE once broadcast.
+// Your aTokens will be burned in exchange for the underlying tokens. This transaction is IRREVERSIBLE once broadcast.
 
-Do you want to proceed with this withdrawal?`
+// Do you want to proceed with this withdrawal?`
 
-        const confirmation = await server.server.elicitInput({
-          message: confirmationMessage,
-          requestedSchema: {
-            type: 'object',
-            properties: {
-              confirmed: {
-                type: 'boolean',
-                title: 'Confirm Withdraw',
-                description: 'Check to confirm and execute withdrawal'
-              }
-            },
-            required: ['confirmed']
-          }
-        })
+//         const confirmation = await server.server.elicitInput({
+//           message: confirmationMessage,
+//           requestedSchema: {
+//             type: 'object',
+//             properties: {
+//               confirmed: {
+//                 type: 'boolean',
+//                 title: 'Confirm Withdraw',
+//                 description: 'Check to confirm and execute withdrawal'
+//               }
+//             },
+//             required: ['confirmed']
+//           }
+//         })
 
-        if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
-          return {
-            content: [{ type: 'text', text: 'Withdraw cancelled by user. No funds were spent.' }]
-          }
-        }
+//         if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
+//           return {
+//             content: [{ type: 'text', text: 'Withdraw cancelled by user. No funds were spent.' }]
+//           }
+//         }
 
         const withdrawResult = await lendingProtocol.withdraw(options)
 

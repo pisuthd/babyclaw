@@ -127,43 +127,43 @@ Error Handling:
           onBehalfOf: onBehalfOfAddress
         }
 
-        const quote = await lendingProtocol.quoteBorrow(options)
+//         const quote = await lendingProtocol.quoteBorrow(options)
 
-        const confirmationMessage = `⚠️  BORROW CONFIRMATION REQUIRED
+//         const confirmationMessage = `⚠️  BORROW CONFIRMATION REQUIRED
 
-Protocol: ${label}
-Chain: ${chain}
-Token: ${token}
-Amount: ${amount}
-Borrower: ${onBehalfOfAddress}
-Estimated Fee: ${quote.fee.toString()}
+// Protocol: ${label}
+// Chain: ${chain}
+// Token: ${token}
+// Amount: ${amount}
+// Borrower: ${onBehalfOfAddress}
+// Estimated Fee: ${quote.fee.toString()}
 
-⚠️ WARNING: This creates DEBT that accrues interest. Monitor your health factor to avoid liquidation.
+// ⚠️ WARNING: This creates DEBT that accrues interest. Monitor your health factor to avoid liquidation.
 
-This transaction is IRREVERSIBLE once broadcast.
+// This transaction is IRREVERSIBLE once broadcast.
 
-Do you want to proceed with this borrow?`
+// Do you want to proceed with this borrow?`
 
-        const confirmation = await server.server.elicitInput({
-          message: confirmationMessage,
-          requestedSchema: {
-            type: 'object',
-            properties: {
-              confirmed: {
-                type: 'boolean',
-                title: 'Confirm Borrow',
-                description: 'Check to confirm and execute borrow'
-              }
-            },
-            required: ['confirmed']
-          }
-        })
+//         const confirmation = await server.server.elicitInput({
+//           message: confirmationMessage,
+//           requestedSchema: {
+//             type: 'object',
+//             properties: {
+//               confirmed: {
+//                 type: 'boolean',
+//                 title: 'Confirm Borrow',
+//                 description: 'Check to confirm and execute borrow'
+//               }
+//             },
+//             required: ['confirmed']
+//           }
+//         })
 
-        if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
-          return {
-            content: [{ type: 'text', text: 'Borrow cancelled by user. No debt was created.' }]
-          }
-        }
+//         if (confirmation.action !== 'accept' || !confirmation.content?.confirmed) {
+//           return {
+//             content: [{ type: 'text', text: 'Borrow cancelled by user. No debt was created.' }]
+//           }
+//         }
 
         const borrowResult = await lendingProtocol.borrow(options)
 
