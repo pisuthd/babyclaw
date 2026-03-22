@@ -63,9 +63,8 @@ Error Handling:
         burnRole: z.string().describe('Role used for burning (AI Agent or Creator)'),
         previousBalance: z.string().describe('Balance before burn'),
         newBalance: z.string().describe('Balance after burn'),
-        transactionHash: z.string().describe('Transaction hash'),
-        blockNumber: z.union([z.number(), z.null()]).describe('Block number'),
-        gasUsed: z.string().describe('Gas used')
+        transaction_hash: z.string().describe('Transaction hash'),
+        token_address: z.string().describe('Token contract address')
       }),
       annotations: {
         readOnlyHint: false,
