@@ -1,8 +1,13 @@
 # BabyClaw — Autonomous DeFi Bank Powered by BABY
 
+[Live Demo](https://babyclaw.kilolend.xyz/) • [YouTube Video](https://youtu.be/KqqgXh70FNU) 
+
 BabyClaw is an autonomous money market that optimizes capital utilization through agent-driven execution. Instead of idle liquidity, **BABY** continuously monitors markets, borrows excess capital, and deploys it into higher-yield strategies across chains before settling profits back on-chain.
 
 Built on Celo with a fork of Compound V2, BabyClaw uses OpenClaw for decision-making and WDK as a unified **wallet + execution environment**. WDK enables BABY to sign transactions, execute DeFi actions, and run custom MCP tools within the same runtime — allowing seamless interaction with external protocols like Aave and cross-chain bridges. Profits are converted into $BABY and burned, enforcing a deflationary economic loop.
+
+<img width="1346" height="735" alt="Screenshot from 2026-03-22 23-49-50" src="https://github.com/user-attachments/assets/6d8255f3-308d-4529-baf7-bcf77ffe01bc" />
+
 
 ## Key Features
 
@@ -58,21 +63,8 @@ All tools are executed through WDK, which acts as both the self-custodial wallet
 ## How It Works 
 
 BABY runs a continuous capital optimization loop: 
-1. **Observe**
-- Read BabyClaw utilization & rates
-- Detect inefficiencies
-2. **Decide**
-- Compare borrow cost vs external yield
-- Confirm profitability 
-3. **Execute**
-- Borrow USDT using $BABY as collateral
-- Deploy capital to external markets
-4. **Settle**
-- Withdraw funds + yield
-- Repay loan
-5. **Burn**
-- Convert profit → $BABY
-- Execute on-chain burn
+
+<img width="1123" height="752" alt="Screenshot from 2026-03-22 23-48-51" src="https://github.com/user-attachments/assets/5c4de359-ce9a-4ef9-b093-b7934eed6f74" />
 
 **Current Active Strategy:** 
 
