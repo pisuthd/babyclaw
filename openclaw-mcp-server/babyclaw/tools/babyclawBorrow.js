@@ -113,15 +113,17 @@ Error Handling:
         // Parse amount to base units
         const amountRaw = parseAmountToBaseUnits(amount, tokenConfig.decimals)
 
+        // Create interface for encoding function call data
+        const iface = new ethers.Interface(CTOKEN_ABI)
+        
         // Send borrow transaction
         const tx = await account.sendTransaction({
           to: cTokenAddress,
-          abi: CTOKEN_ABI,
-          functionName: 'borrow',
-          args: [amountRaw]
+          value: 0n,
+          data: iface.encodeFunctionData('borrow', [amountRaw])
         })
 
-        const txHash = tx.hash || tx
+        const txHash = tx.hash || tx.toString()
 
         // Calculate new health factor after borrowing
         const newLiquidityResult = await comptrollerContract.getAccountLiquidity(address)
@@ -201,7 +203,7 @@ Borrow Details:
 - New Available Liquidity: $${newLiquidityUSD.toFixed(2)}
 - From: ${address}
 - To: ${cTokenAddress}
-- Transaction: ${tx}
+- Transaction: ${txHash}
 
 ✅ You have borrowed ${amount} ${token}
 - You are now paying borrow interest on ${amount} ${token}

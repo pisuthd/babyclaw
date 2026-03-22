@@ -2,6 +2,7 @@
 'use strict'
 
 import { z } from 'zod'
+import { ethers } from 'ethers'
 
 /** @typedef {import('../../server.js').WdkMcpServer} WdkMcpServer */
 
@@ -114,12 +115,14 @@ Error Handling:
           }
         }
 
+        // Create interface for encoding function call data
+        const iface = new ethers.Interface(CTOKEN_ABI)
+
         // Send withdraw transaction
         const tx = await account.sendTransaction({
           to: cTokenAddress,
-          abi: CTOKEN_ABI,
-          functionName: 'redeemUnderlying',
-          args: [amountRaw]
+          value: 0n,
+          data: iface.encodeFunctionData('redeemUnderlying', [amountRaw])
         })
 
         // Calculate cTokens burned
@@ -137,9 +140,10 @@ Error Handling:
           ctoken_symbol: `c${token}`,
           exchange_rate: formatAmountFromBaseUnits(exchangeRate, 18),
           previous_balance: supplyFormatted,
-          transaction_hash: tx,
+          transaction_hash: tx.hash.toString(),
           from: address,
           to: cTokenAddress,
+          market_address: cTokenAddress,
           next_steps: [
             `You have withdrawn ${amount} ${token} including any earned interest`,
             'Your tokens are back in your wallet',
@@ -165,7 +169,7 @@ Withdraw Details:
 - Previous Balance: ${supplyFormatted} ${token}
 - From: ${address}
 - To: ${cTokenAddress}
-- Transaction: ${tx}${nextStepsText}`
+- Transaction: ${tx.hash}${nextStepsText}`
 
         return {
           content: [{ type: 'text', text: contentText }],

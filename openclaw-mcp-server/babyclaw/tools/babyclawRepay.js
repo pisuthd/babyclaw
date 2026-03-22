@@ -2,6 +2,7 @@
 'use strict'
 
 import { z } from 'zod'
+import { ethers } from 'ethers'
 
 /** @typedef {import('../../server.js').WdkMcpServer} WdkMcpServer */
 
@@ -104,23 +105,25 @@ Error Handling:
         // Parse amount to base units
         const amountRaw = parseAmountToBaseUnits(amount, tokenConfig.decimals)
 
+        // Create interface for encoding function call data
+        const iface = new ethers.Interface(CTOKEN_ABI)
+
         // Send repay transaction
-        // For native CELO, we need to send value, for ERC20 tokens we just call repayBorrow
+        // For native CELO, repayBorrow takes no parameters (amount from msg.value)
+        // For ERC20 tokens, we pass amount as function parameter
         let tx
         if (token === 'CELO') {
+          // For native CELO, use 0x as data since amount is in msg.value
           tx = await account.sendTransaction({
             to: cTokenAddress,
-            abi: CTOKEN_ABI,
-            functionName: 'repayBorrow',
-            args: [],
-            value: amountRaw
+            value: amountRaw,
+            data: '0x'
           })
         } else {
           tx = await account.sendTransaction({
             to: cTokenAddress,
-            abi: CTOKEN_ABI,
-            functionName: 'repayBorrow',
-            args: [amountRaw]
+            value: 0n,
+            data: iface.encodeFunctionData('repayBorrow', [amountRaw])
           })
         }
 
@@ -163,9 +166,10 @@ Error Handling:
           amount_repaid: amount,
           amount_raw: amountRaw.toString(),
           previous_borrow_balance: borrowBalanceFormatted,
-          transaction_hash: tx,
+          transaction_hash: tx.hash,
           from: address,
           to: cTokenAddress,
+          market_address: cTokenAddress,
           new_health_factor: newHealthFactor,
           new_liquidity_usd: newLiquidityUSD.toFixed(2),
           next_steps: [
@@ -200,7 +204,7 @@ Repay Details:
 - New Available Liquidity: $${newLiquidityUSD.toFixed(2)}
 - From: ${address}
 - To: ${cTokenAddress}
-- Transaction: ${tx}${nextStepsText}`
+- Transaction: ${tx.hash}${nextStepsText}`
 
         return {
           content: [{ type: 'text', text: contentText }],
