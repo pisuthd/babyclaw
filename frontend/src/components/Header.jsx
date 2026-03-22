@@ -7,7 +7,7 @@ function Header({ onNavigate }) {
 
   const navItems = [ 
     { label: 'Markets', path: '/markets' },
-    { label: 'BABY', path: '/activity' },
+    { label: 'Activity', path: '/activity' },
     { label: 'Portfolio', path: '/portfolio' },
   ];
 

@@ -3,7 +3,11 @@ import celoIcon from '/celo-icon.png';
 
 function Hero({ onNavigate }) {
   return (
-    <section className="  flex items-center justify-center px-4 md:px-8 py-16 md:py-24">
+    <section className="flex items-center justify-center px-4 md:px-8 py-16 md:py-24">
+      {/* Hero-specific ambient glow effects */}
+      {/* <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent-cyan/10 rounded-full blur-3xl -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-cyan/5 rounded-full blur-3xl translate-y-1/2"></div> */}
+      
       <div className="max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
           {/* Left Side - Content */}

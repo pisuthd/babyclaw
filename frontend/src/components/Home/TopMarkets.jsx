@@ -50,10 +50,14 @@ function TopMarkets() {
   };
 
   return (
-    <section className="px-4 md:px-8 py-16 md:py-20 bg-bg-secondary/50">
-      <div className="max-w-7xl mx-auto">
+    <section className="px-4 md:px-8 py-16 md:py-20 bg-bg-secondary/50 relative overflow-hidden">
+      {/* TopMarkets-specific ambient glow effects */}
+      <div className="absolute top-1/2 left-0 w-64 h-64 bg-accent-cyan/3 rounded-full blur-3xl -translate-y-1/2"></div>
+      <div className="absolute top-1/2 right-0 w-64 h-64 bg-accent-cyan/3 rounded-full blur-3xl -translate-y-1/2"></div>
+      
+      <div className="relative max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-text-primary">Live Markets</h2>
-        <p className="text-lg md:text-xl text-center mb-12 md:mb-16 text-text-muted">Real-time lending rates and market data</p>
+        <p className="text-lg md:text-xl text-center mb-12 md:mb-16 text-text-muted">Real-time lending rates — actively monitored and optimized by BABY</p>
 
         <div className="overflow-x-auto rounded-xl shadow-lg max-w-4xl mx-auto">
           <table className="w-full bg-bg-secondary/80 border border-border-color rounded-xl overflow-hidden">
