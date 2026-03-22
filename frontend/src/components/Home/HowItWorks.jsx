@@ -108,7 +108,7 @@ export default function HowItWorks() {
             How BABY Operates
           </h2>
           <p className="text-base md:text-lg text-text-secondary  mx-auto">
-           Powered by OpenClaw, BABY autonomously observes, decides, and executes across chains
+            BABY's autonomous lending and yield optimization process
           </p>
         </div>
 
@@ -235,12 +235,15 @@ export default function HowItWorks() {
             fontFamily="'Inter', sans-serif">
             Agent
           </text>
-          {/* <text x={CX} y={CY + 22} textAnchor="middle"
-            fontSize="9" fill="#64748b"
-            fontFamily="'Inter', sans-serif">
-            6 steps
-          </text> */}
         </svg>
+
+        
+        </div>
+        {/* Active Strategy Block */}
+        <div className="mt-12 text-center max-w-4xl mx-auto">
+          <p className="text-sm md:text-base text-text-secondary">
+            <span className="font-semibold text-text-primary">Active Strategy:</span> BABY supplies $BABY as collateral, borrows USDT, bridges to Ethereum, supplies to Aave for yield, bridges back to CELO when profits, and burns $BABY.
+          </p>
       </div>
     </section>
   );

@@ -9,7 +9,7 @@ function Footer() {
               BabyClaw
             </div>
             <p className="text-text-muted text-sm leading-relaxed max-w-sm">
-              Autonomous DeFi Banking with BABY, an OpenClaw agent powered by Tether's WDK
+              Autonomous DeFi Bank with an OpenClaw agent powered by Tether's WDK
             </p>
           </div>
 
@@ -17,19 +17,16 @@ function Footer() {
           <div>
             <h3 className="text-text-primary font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Autonomous Yield</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Cross-Chain Allocation</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Token Burns</a></li> 
+              <li><a href="/markets" className="text-text-secondary hover:text-accent-cyan transition-colors">Markets</a></li>
+              <li><a href="/portfolio" className="text-text-secondary hover:text-accent-cyan transition-colors">Portfolio</a></li> 
             </ul>
           </div>
 
           {/* Resources Column */}
           <div>
             <h3 className="text-text-primary font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Documentation</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">GitHub</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Smart Contracts</a></li> 
+            <ul className="space-y-2 text-sm"> 
+              <li><a href="https://github.com/pisuthd/babyclaw" className="text-text-secondary hover:text-accent-cyan transition-colors">GitHub</a></li> 
             </ul>
           </div>
 
@@ -37,9 +34,7 @@ function Footer() {
           <div>
             <h3 className="text-text-primary font-semibold mb-4">Community</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Discord</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Twitter</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-accent-cyan transition-colors">Forum</a></li>
+              <li><a href="https://discord.com/invite/BDQnjcHbnj" className="text-text-secondary hover:text-accent-cyan transition-colors">Discord</a></li> 
             </ul>
           </div>
         </div>
