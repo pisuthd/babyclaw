@@ -13,6 +13,45 @@ export const TOKEN_CONFIGS = {
   CELO: { address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', symbol: 'CELO', decimals: 18 }
 }
 
+// BABY Token ABI (includes burn function and role checking)
+export const BABY_TOKEN_ABI = [
+  {
+    inputs: [{ name: 'amount', type: 'uint256' }],
+    name: 'burn',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [{ name: 'account', type: 'address' }],
+    name: 'isAIAgent',
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ name: 'account', type: 'address' }],
+    name: 'isCreator',
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ name: 'account', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'decimals',
+    outputs: [{ name: '', type: 'uint8' }],
+    stateMutability: 'view',
+    type: 'function'
+  }
+]
+
 // ERC20 ABI
 export const ERC20_ABI = [
   {

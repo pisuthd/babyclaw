@@ -30,6 +30,7 @@ import { babyclawSupply } from './babyclawSupply.js'
 import { babyclawBorrow } from './babyclawBorrow.js'
 import { babyclawRepay } from './babyclawRepay.js'
 import { babyclawWithdraw } from './babyclawWithdraw.js'
+import { babyclawBurnToken } from './babyclawBurnToken.js'
 
 /**
  * Registers all BabyClaw lending tools with the MCP server
@@ -50,6 +51,7 @@ export function registerBabyClawTools (server) {
   babyclawBorrow(server)
   babyclawRepay(server)
   babyclawWithdraw(server)
+  babyclawBurnToken(server)
 }
 
 /**
@@ -64,5 +66,6 @@ export {
   babyclawSupply,
   babyclawBorrow,
   babyclawRepay,
-  babyclawWithdraw
+  babyclawWithdraw,
+  babyclawBurnToken
 }
