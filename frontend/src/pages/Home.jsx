@@ -1,6 +1,7 @@
 import Hero from "../components/Home/Hero"
 import TopMarkets from "../components/Home/TopMarkets";
 import HowItWorks from "../components/Home/HowItWorks";
+import CTASection from "../components/Home/CTASection";
 
 export const Home = ({ onNavigate }) => {
 
@@ -9,6 +10,7 @@ export const Home = ({ onNavigate }) => {
             <Hero onNavigate={onNavigate} />
             <TopMarkets/>
             <HowItWorks/>
+            <CTASection onNavigate={onNavigate}/>
         </div>
     );
 };

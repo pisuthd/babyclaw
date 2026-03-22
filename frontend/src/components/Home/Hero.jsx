@@ -27,23 +27,23 @@ function Hero({ onNavigate }) {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent">
               Autonomous DeFi Bank<br/> Powered by BABY
             </h1>
-            <p className="text-lg md:text-xl text-text-secondary mb-8 md:mb-12 font-light leading-relaxed">
+            <p className="text-sm md:text-xl text-text-secondary mb-8 md:mb-12 font-light leading-relaxed">
               BABY autonomously manages money markets 24/7, borrows idle liquidity, allocates across chains for higher yield, and burns $BABY on every profit cycle.
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8 md:mb-12">
               <button
-                onClick={() => onNavigate('/lounge')}
+                onClick={() => onNavigate('/markets')}
                 className="px-8 py-3 cursor-pointer bg-accent-cyan text-bg-primary font-semibold rounded-full transition-all hover:bg-accent-cyan-hover hover:-translate-y-0.5 hover:shadow-[0_6px_30px_rgba(62,223,223,0.4)] border-2 border-accent-cyan hover:border-accent-cyan-hover"
               >
-                Enter the Lounge
+                View Markets
               </button>
               <button
-                onClick={() => onNavigate('/markets')}
+                onClick={() => window.open('https://discord.com/invite/BDQnjcHbnj', '_blank')}
                 className="px-8 py-3 bg-transparent cursor-pointer text-accent-cyan font-semibold rounded-full transition-all hover:bg-accent-cyan/10 border-2 border-accent-cyan hover:border-accent-cyan-hover"
               >
-                View Markets
+                Chat with BABY
               </button>
             </div>
 
