@@ -6,7 +6,7 @@ function Footer() {
           {/* Brand Column */}
           <div className="md:col-span-2">
             <div className="text-2xl font-bold bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent mb-3" style={{ fontFamily: '"Orbitron", sans-serif' }}>
-              BabyClaw
+              BabyBank
             </div>
             <p className="text-text-muted text-sm leading-relaxed max-w-sm">
               Autonomous DeFi Bank with an OpenClaw agent powered by Tether's WDK
@@ -45,7 +45,7 @@ function Footer() {
             Made with ❤️ during Tether Hackathon Galactica: WDK Edition 1
           </p>
           <p className="text-text-muted text-sm">
-            © 2026 BabyClaw. All rights reserved.
+            © 2026 BabyBank. All rights reserved.
           </p>
         </div>
       </div>

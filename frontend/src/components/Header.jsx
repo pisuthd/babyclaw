@@ -24,7 +24,7 @@ function Header({ onNavigate }) {
           className="text-xl md:text-2xl font-bold bg-gradient-to-r from-accent-cyan to-text-primary bg-clip-text text-transparent hover:opacity-80 transition-opacity"
           style={{ fontFamily: '"Orbitron", sans-serif' }}
         >
-          BabyClaw
+          BabyBank
         </a>
 
         {/* Desktop Navigation */}

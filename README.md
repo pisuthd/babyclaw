@@ -1,10 +1,10 @@
-# BabyClaw — Autonomous DeFi Bank Powered by BABY
+# BabyBank — Autonomous DeFi Bank Powered by BABY
 
-[Live Demo](https://babyclaw.kilolend.xyz/) • [YouTube Video](https://youtu.be/A0_E_p7sCHY) 
+[Live Demo](https://babybank.kilolend.xyz/) • [YouTube Video](https://youtu.be/A0_E_p7sCHY) 
 
-BabyClaw is an autonomous money market that optimizes capital utilization through agent-driven execution. Instead of idle liquidity, **BABY** continuously monitors markets, borrows excess capital, and deploys it into higher-yield strategies across chains before settling profits back on-chain.
+BabyBank is an autonomous money market that optimizes capital utilization through agent-driven execution. Instead of idle liquidity, **BABY** continuously monitors markets, borrows excess capital, and deploys it into higher-yield strategies across chains before settling profits back on-chain.
 
-Built on Celo with a fork of Compound V2, BabyClaw uses OpenClaw for decision-making and WDK as a unified **wallet + execution environment**. WDK enables BABY to sign transactions, execute DeFi actions, and run custom MCP tools within the same runtime — allowing seamless interaction with external protocols like Aave and cross-chain bridges. Profits are converted into $BABY and burned, enforcing a deflationary economic loop.
+Built on Celo with a fork of Compound V2, BabyBank uses OpenClaw for decision-making and WDK as a unified **wallet + execution environment**. WDK enables BABY to sign transactions, execute DeFi actions, and run custom MCP tools within the same runtime — allowing seamless interaction with external protocols like Aave and cross-chain bridges. Profits are converted into $BABY and burned, enforcing a deflationary economic loop.
 
 <img width="1346" height="735" alt="Screenshot from 2026-03-22 23-49-50" src="https://github.com/user-attachments/assets/6d8255f3-308d-4529-baf7-bcf77ffe01bc" />
 
@@ -13,7 +13,7 @@ Built on Celo with a fork of Compound V2, BabyClaw uses OpenClaw for decision-ma
 
 - **Autonomous Agent Execution (OpenClaw)** — BABY continuously monitors markets, makes decisions, and executes yield strategies in real time, with **Discord** as the primary interface for interaction and live agent updates
 
-- **Programmable Wallet + Execution Layer (WDK + MCP Toolkit)** — BABY operates through a self-custodial wallet that can sign transactions and run custom MCP tools to interact directly with BabyClaw contracts (borrow, supply)
+- **Programmable Wallet + Execution Layer (WDK + MCP Toolkit)** — BABY operates through a self-custodial wallet that can sign transactions and run custom MCP tools to interact directly with BabyBank contracts (borrow, supply)
 
 - **Battle-Tested Money Market (Compound V2)** — Built on a proven lending architecture, enabling secure collateralization, borrowing, and interest rate mechanics
 
@@ -34,7 +34,7 @@ Built on Celo with a fork of Compound V2, BabyClaw uses OpenClaw for decision-ma
 
 ### Agent Layer (OpenClaw + MCP)
 
-**BABY** operates inside OpenClaw and uses mcporter (MCP bridge) to access tools from the `babyclaw-mcp-server`. Through this setup, the agent can:
+**BABY** operates inside OpenClaw and uses mcporter (MCP bridge) to access tools from the `openclaw-mcp-server`. Through this setup, the agent can:
 
 - Monitor market conditions (utilization, rates, prices)
 - Decide profitable strategies
@@ -44,17 +44,17 @@ All tool executions are powered by WDK, which acts as a self-custodial wallet an
 
 ### Execution Layer (WDK + MCP Tools)
 
-The `babyclaw-mcp-server` exposes structured tools that BABY can call in natural language or programmatically, enabling full end-to-end execution of DeFi strategies.
+The `openclaw-mcp-server` exposes structured tools that BABY can call in natural language or programmatically, enabling full end-to-end execution of DeFi strategies.
 
 **WDK (out-of-the-box tools):**
 - @tetherto/wdk-wallet-evm — wallet operations (balance, address, transfers)
 - @tetherto/wdk-protocol-bridge-usdt0-evm — cross-chain bridging
 - @tetherto/wdk-protocol-lending-aave-evm — lending and borrowing on Aave
 
-**Custom Tools (BabyClaw):**
+**Custom Tools (BabyBank):**
 - Lending actions: supply, borrow, repay, withdraw, liquidity management
 - Token operations: approvals, transfers
-- Protocol-specific interactions with BabyClaw contracts
+- Protocol-specific interactions with BabyBank contracts
 
 All tools are executed through WDK, which acts as both the self-custodial wallet and execution runtime for the agent.
 
@@ -68,7 +68,7 @@ BABY runs a continuous capital optimization loop:
 
 **Current Active Strategy:** 
 
-Supply $BABY (collateral, 15%) > Borrow USDT from BabyClaw (~0.92%) > Deploy to Aave (~1.8% supply APY) > Earn yield > Repay loan > Profit → buy $BABY → burn
+Supply $BABY (collateral, 15%) > Borrow USDT from BabyBank (~0.92%) > Deploy to Aave (~1.8% supply APY) > Earn yield > Repay loan > Profit → buy $BABY → burn
 
 ## 🚀 Deployment (Celo Mainnet)
 
